@@ -209,11 +209,17 @@ async function renderPortfolio() {
         const { ticker, papers, avgPaperPrice } = wallet.assets[i];
         // const currentPrice = await getUpdatedPrice(ticker);
         const currentPrice = await updateTickersPricesCache(ticker);
+        const percentage = (currentPrice/avgPaperPrice - 1)*100;
+        let plus='';
+        if (percentage>0) {
+            plus='+';
+        }
         const html = `
         <div>${ticker}</div>
         <div>${papers}</div>
         <div>${avgPaperPrice.toFixed(2)}</div> 
-        <div>${currentPrice.toFixed(2)}</div>       
+        <div>${currentPrice.toFixed(2)}</div>
+        <div>${plus}${percentage.toFixed(2)}%</div>
         `;
         assetsListHTML +=html;
     }
