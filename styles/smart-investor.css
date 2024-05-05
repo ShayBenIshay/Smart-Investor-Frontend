@@ -59,12 +59,14 @@ body {
     padding-bottom: 10px;
 }
 
+.portfolio-profit,
 .bought-row {
     background-color: lightgreen;
     height: 35px;
 }
 
+.portfolio-loss,
 .sold-row {
     height: 35px;
-    background-color: lightpink;
+    background-color: rgb(254, 71, 71);
 }

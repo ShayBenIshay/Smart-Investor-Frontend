@@ -211,15 +211,19 @@ async function renderPortfolio() {
         const currentPrice = await updateTickersPricesCache(ticker);
         const percentage = (currentPrice/avgPaperPrice - 1)*100;
         let plus='';
+        let portfolioProfitClass='';
         if (percentage>0) {
             plus='+';
+            portfolioProfitClass = `class = "portfolio-profit"`;
+        } else if (percentage<0) {
+            portfolioProfitClass = 'class = "portfolio-loss"';
         }
         const html = `
-        <div>${ticker}</div>
-        <div>${papers}</div>
-        <div>${avgPaperPrice.toFixed(2)}</div> 
-        <div>${currentPrice.toFixed(2)}</div>
-        <div>${plus}${percentage.toFixed(2)}%</div>
+        <div ${portfolioProfitClass}>${ticker}</div>
+        <div ${portfolioProfitClass}>${papers}</div>
+        <div ${portfolioProfitClass}>${avgPaperPrice.toFixed(2)}</div> 
+        <div ${portfolioProfitClass}>${currentPrice.toFixed(2)}</div>
+        <div ${portfolioProfitClass}>${plus}${percentage.toFixed(2)}%</div>
         `;
         assetsListHTML +=html;
     }
