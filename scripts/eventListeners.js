@@ -2,7 +2,7 @@ import { prefetchedStockData,fetchStockData} from './js-load-tickers.js';
 import { buyPaper,sellPaper,deposit } from './smart-investor.js';
 import { isSavingExcessCalls,resetValues } from './variables.js';
 //event listeners from smart-investor.js
-document.querySelector('.js-buy-button').addEventListener('click', () => buyPaper());
+document.querySelector('.js-buy-button').addEventListener('click', async () => await buyPaper());
 document.querySelector('.js-sell-button').addEventListener('click', () => sellPaper());
 document.querySelector('.js-deposit').addEventListener('click', () => deposit());
 document.querySelector('.js-reset').addEventListener('click', () => resetValues());
