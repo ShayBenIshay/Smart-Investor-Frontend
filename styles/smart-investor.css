@@ -70,3 +70,8 @@ body {
     height: 35px;
     background-color: rgb(254, 71, 71);
 }
+
+.portfolio-neutral {
+    height: 35px;
+    background-color: lightgray;
+}

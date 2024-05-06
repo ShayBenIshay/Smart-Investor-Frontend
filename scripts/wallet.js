@@ -19,8 +19,8 @@ export function updateWallet(ticker,papers,cost) {
     wallet.assets.forEach((assetObject,index) => {
         if (assetObject.ticker===ticker) {
             if (papers>0) {
-                const totalPapersPrice = wallet.assets[index].papers * wallet.assets[index].avgPaperPrice + (papers*cost);                
-                wallet.assets[index].avgPaperPrice = totalPapersPrice/(wallet.assets[index].papers+papers);
+                const totalBuyPrice = wallet.assets[index].papers * wallet.assets[index].avgBuyPrice + (papers*cost);                
+                wallet.assets[index].avgBuyPrice = totalBuyPrice/(wallet.assets[index].papers+papers);
             }
             wallet.assets[index].papers+=papers;
             if(wallet.assets[index].papers===0){
@@ -33,14 +33,13 @@ export function updateWallet(ticker,papers,cost) {
     if (indexOfAssetToRemove>=0) {
         wallet.assets.splice(indexOfAssetToRemove,1);
     }
-    
     if (isNewAsset) {
-        wallet.assets.push({ticker,papers,avgPaperPrice: cost});
+        wallet.assets.push({ticker,papers,avgBuyPrice: cost});
     }
     localStorage.setItem('wallet', JSON.stringify(wallet));
 }
 
 export function renderWallet() {
     const walletElement = document.querySelector('.js-wallet');
-    walletElement.innerHTML = `Wallet liquidity: $${wallet.liquid}`;
+    walletElement.innerHTML = `Wallet liquidity: $${wallet.liquid.toFixed(2)}`;
 }

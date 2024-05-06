@@ -1,4 +1,4 @@
-import { executeTrade } from "./smart-investor.js";
+import { executeTrade,clearInputElements } from "./smart-investor.js";
 //variables definition
 export let tradeHistoryList = JSON.parse(localStorage.getItem('tradeHistoryList')) || [];
 export let wallet = JSON.parse(localStorage.getItem('wallet')) || {
@@ -7,16 +7,16 @@ export let wallet = JSON.parse(localStorage.getItem('wallet')) || {
     //assetExample = {
     //     ticker,
     //     price,
-    //     avgPaperPrice
+    //     avgBuyPrice
     //};
     ]
 };
 export let tickersList=[];
-export const isSavingExcessCalls = true;
+export const isSavingExcessCalls = true; //false value not supported yet.
 export let tickersPricesCache = JSON.parse(localStorage.getItem('tickersPricesCache')) || [
     // tickerPriceObjectExample = {
     //     ticker,
-    //     cost,
+    //     price,
     //     date
     // }
 
@@ -44,6 +44,7 @@ async function initalValues() {
 }
 
 export function resetValues() {
+    clearInputElements();
     localStorage.removeItem('wallet')
     localStorage.removeItem('tradeHistoryList');
     localStorage.removeItem('tickersPricesCache');
