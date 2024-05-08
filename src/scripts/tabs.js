@@ -1,5 +1,4 @@
 
-console.log('tabs.js');
 function openTab(event, tabName) {
     // Get all elements with class="tabcontent" and hide them
     var tabcontent = document.getElementsByClassName("tabcontent");

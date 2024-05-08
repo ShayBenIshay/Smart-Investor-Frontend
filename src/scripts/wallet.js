@@ -1,6 +1,5 @@
 import { wallet } from './variables.js';
 
-console.log('wallet.js');
 renderWallet();
 
 export function validatePapersInWallet(tickerToValidate,papersToValidate) {
@@ -42,5 +41,5 @@ export function updateWallet(ticker,papers,cost) {
 
 export function renderWallet() {
     const walletElement = document.querySelector('.js-wallet');
-    walletElement.innerHTML = `Wallet liquidity: $${wallet.liquid.toFixed(2)}`;
+    walletElement.innerHTML = `Wallet liquidity: $${wallet.liquid.toFixed(2).replace(/\.00$/, '')}`;
 }

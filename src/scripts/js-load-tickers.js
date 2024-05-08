@@ -1,6 +1,5 @@
 import { tickersList,isSavingExcessCalls } from "./variables.js";
 
-console.log('js-load-tickers.js')
 
 export function loadTickersList() {
     if (isSavingExcessCalls) {

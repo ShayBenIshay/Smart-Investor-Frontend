@@ -23,7 +23,6 @@ export let tickersPricesCache = JSON.parse(localStorage.getItem('tickersPricesCa
 ];
 
 //script for variables:
-console.log('variables.js');
 initalValues();
 
 

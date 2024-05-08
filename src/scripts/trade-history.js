@@ -1,7 +1,6 @@
 import { tradeHistoryList } from './variables.js';
 import { undoTrade } from './smart-investor.js';
 
-console.log('trade-history.js');
 renderTradeHistoryListHTML();
 
 export function updateTradeHistoryList(type,ticker,cost,papers) {
