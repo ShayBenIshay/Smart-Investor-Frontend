@@ -4,7 +4,6 @@ import { updateTradeHistoryList,removeTradeHistoryObject,renderTradeHistoryListH
 import { updateWallet,renderWallet,validatePapersInWallet } from './wallet.js';
 
 // script:
-console.log('smart-investor.js');
 await renderPortfolio();
 
 //fucntions
@@ -26,6 +25,11 @@ export async function buyPaper() {
     if (ticker==='' || cost===0 || papers===0) {
         return;
     }
+    if (wallet.liquid < papers*cost) {
+        console.error(`Cannot buy ${papers} papers for $${cost} it is more then $${wallet.liquid.toFixed(2)} liquid in your wallet`);
+        return;
+    }
+
     clearInputElements();
     await executeTrade('bought',ticker,papers,cost);
 }
@@ -170,18 +174,36 @@ export function undoTrade(ticker,papers,cost,index) {
 }
 
 export function deposit() {
-    const depositInputElement = document.querySelector('.js-deposit-input');
-    const deposit = Number(depositInputElement.value);
+    const walletInputElement = document.querySelector('.js-wallet-input');
+    const deposit = Number(walletInputElement.value);
 
-    if (deposit===0) {
-        console.error('Empty deposit');
+    if (deposit<=0) {
+        console.error(`$${deposit} is not a valid deposit`);
         return;
     }
 
     wallet.liquid += deposit;
     localStorage.setItem('wallet',JSON.stringify(wallet));
     renderWallet();
-    depositInputElement.value = '';
+    walletInputElement.value = '';
+}
+
+export function withdrawal() {
+    const walletInputElement = document.querySelector('.js-wallet-input');
+    const withdrawal = Number(walletInputElement.value);
+
+    if (withdrawal<=0) {
+        console.error(`$${withdrawal} is not a valid withdrawal`);
+        return;
+    }
+    if (wallet.liquid - withdrawal < 0) {
+        console.error(`Cannot withdrawal $${withdrawal} it is more then $${wallet.liquid.toFixed(2)} liquid in your wallet`)
+        return;
+    }
+    wallet.liquid -= withdrawal;
+    localStorage.setItem('wallet',JSON.stringify(wallet));
+    renderWallet();
+    walletInputElement.value = '';
 }
 
 //rendering functions

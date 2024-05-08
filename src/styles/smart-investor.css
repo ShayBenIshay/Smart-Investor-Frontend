@@ -29,7 +29,7 @@ body {
     column-gap: 5px;
 }
 
-.deposit-input,
+.wallet-input,
 .papers-input,
 .ticker-input,
 .cost-input {
@@ -58,6 +58,20 @@ body {
     padding-top: 10px;
     padding-bottom: 10px;
 }
+
+.deposit-button,
+.withdrawal-button {
+    font-size: 15px;
+    cursor: pointer;
+    width: 100px;
+    /* border: none; */
+
+}
+
+.withdrawal-button {
+    margin-top: 5px;
+}
+
 
 .portfolio-profit,
 .bought-row {
