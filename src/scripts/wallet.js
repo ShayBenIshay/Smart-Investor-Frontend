@@ -1,5 +1,6 @@
 import { wallet } from './variables.js';
 
+console.log('wallet.js');
 renderWallet();
 
 export function validatePapersInWallet(tickerToValidate,papersToValidate) {

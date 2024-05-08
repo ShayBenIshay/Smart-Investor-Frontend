@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Smart Investor</title>
+    <link 
+    rel="stylesheet" 
+    href="styles/smart-investor.css">
+    <link 
+    rel="stylesheet" 
+    href="styles/tabs.css">
+</head>
+<body>
+    
+    
+    <div class="trade-input-grid">
+        <input type="text" placeholder="Ticker" class="js-ticker-input ticker-input" list="ticker-options">
+        <input placeholder="# of papers" class="js-papers-input papers-input" type="number">
+        <input placeholder="Cost" class="js-cost-input cost-input" type="number">
+        <div>
+            <button class="buy-button js-buy-button">Buy</button>
+            <button class="sell-button js-sell-button">Sell</button>
+        </div>
+        <p class="js-wallet"></p>        
+        <input placeholder="Deposit" class="js-deposit-input deposit-input" type="number">
+        <button class="js-deposit">Deposit</button>
+        <button class="js-reset">Reset</button>
+    </div>
+
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'Tab1')">Trading History</button>
+        <button class="tablinks" onclick="openTab(event, 'Tab2')">Portfolio</button>
+    </div>
+    
+    <div id="Tab1" class="tabcontent">
+        <div>
+            <p>Trading History</p>
+            <div class="js-trade-list trade-grid"></div>        
+        </div>
+    </div>  
+    <div id="Tab2" class="tabcontent">
+        <p>Portfolio</p>
+        <div class="portfolio-grid">
+            <div>Ticker</div>
+            <div>Position</div>
+            <div>Avg Buying Price</div>
+            <div>Current Stock Price</div>
+            <div>Profit/Loss %</div>
+        </div>
+        <div class="js-portfolio portfolio-grid"></div>            
+    </div>
+  
+    <script type="module" src="scripts/smart-investor.js"></script>
+    <script type="module" src="scripts/wallet.js"></script>
+    <script type="module" src="scripts/trade-history.js"></script>
+    <script type="module" src="scripts/eventListeners.js"></script>
+    <script type="module" src="scripts/js-load-tickers.js"></script>
+    <script src="scripts/tabs.js"></script>
+
+</body>
+</html>

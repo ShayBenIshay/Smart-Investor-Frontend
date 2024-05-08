@@ -1,0 +1,77 @@
+body {
+    background-color: lightslategray;
+}
+
+.portfolio-grid,
+.trade-grid,
+.trade-input-grid {
+    display: grid;
+    grid-template-columns: 200px 150px 150px 100px 250px;
+    column-gap: 10px;
+    row-gap: 10px;
+    column-gap: 0px;
+    align-items: center;
+    margin-bottom: 10px;
+
+}
+
+.portfolio-grid {
+    grid-template-columns: 200px 150px 150px 150px 150px;
+
+}
+
+.trade-input-grid {
+    margin-top: 20px;
+    margin-left: 70px;
+    grid-template-columns: 200px 150px 150px 100px 250px 150px 100px 100px;
+    margin-bottom: 10px;
+    align-items: stretch;
+    column-gap: 5px;
+}
+
+.deposit-input,
+.papers-input,
+.ticker-input,
+.cost-input {
+    font-size: 15px;
+    padding: 6px;
+}
+
+.undo-button,
+.sell-button,
+.buy-button {
+    background-color: green;
+    color: white;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    width: 100px;
+}
+
+.sell-button{
+    margin-top: 5px;
+    background-color: lightcoral;
+}
+
+.undo-button {
+    background-color: darkred;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.portfolio-profit,
+.bought-row {
+    background-color: lightgreen;
+    height: 35px;
+}
+
+.portfolio-loss,
+.sold-row {
+    height: 35px;
+    background-color: rgb(254, 71, 71);
+}
+
+.portfolio-neutral {
+    height: 35px;
+    background-color: lightgray;
+}
