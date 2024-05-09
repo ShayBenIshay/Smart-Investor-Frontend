@@ -11,7 +11,8 @@ export let wallet = JSON.parse(localStorage.getItem('wallet')) || {
     //};
     ]
 };
-export let tickersList=[];
+
+export let tickersList= JSON.parse(localStorage.getItem('tickersList')) || [];
 export const isSavingExcessCalls = true; //false value not supported yet.
 export let tickersPricesCache = JSON.parse(localStorage.getItem('tickersPricesCache')) || [
     // tickerPriceObjectExample = {

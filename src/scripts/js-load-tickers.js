@@ -38,6 +38,7 @@ export function prefetchedStockData() {
             tickersList.push(jsonInnerObject.Code);
         });
         updateTickerInputElement(tickersList);
+        localStorage.setItem('tickersList',JSON.stringify(tickersList));
     })
     .catch(error => {
         console.error('Error fetching the file: ', error);

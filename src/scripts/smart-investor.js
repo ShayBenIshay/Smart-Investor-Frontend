@@ -214,6 +214,9 @@ async function renderPortfolio() {
         const { ticker,papers,avgBuyPrice } = wallet.assets[i];
         let currentPrice = await fetchRealTimePrice(ticker);
         let percentage = (currentPrice/avgBuyPrice - 1)*100;
+        let totalAssetCost = papers*avgBuyPrice;
+        let totalAssetValue = papers*currentPrice;
+        let totalAssetProfit = totalAssetValue-totalAssetCost;
         let plusHTML='', portfolioProfitClassHTML='';
         if (percentage>0) {
             plusHTML='+';
@@ -226,8 +229,11 @@ async function renderPortfolio() {
         const html = `
         <div ${portfolioProfitClassHTML}>${ticker}</div>
         <div ${portfolioProfitClassHTML}>${papers}</div>
-        <div ${portfolioProfitClassHTML}>${avgBuyPrice}</div> 
+        <div ${portfolioProfitClassHTML}>${avgBuyPrice.toFixed(2)}</div> 
         <div ${portfolioProfitClassHTML}>${currentPrice.toFixed(2)}</div>
+        <div ${portfolioProfitClassHTML}>$${totalAssetCost.toFixed(2)}</div>
+        <div ${portfolioProfitClassHTML}>$${totalAssetValue.toFixed(2)}</div>
+        <div ${portfolioProfitClassHTML}>$${totalAssetProfit.toFixed(2)}</div>
         <div ${portfolioProfitClassHTML}>${plusHTML}${percentage.toFixed(2)}%</div>
         `;
         assetsListHTML +=html;
