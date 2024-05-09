@@ -8,8 +8,8 @@ await renderPortfolio();
 
 //fucntions
 export function sellPaper() {
-    let { ticker,cost,papers} = fetchInput();
-    if (cost===0 || ticker==='' || papers===0) {
+    let { ticker,dateFormat,price,papers} = fetchInput();
+    if (ticker==='' || dateFormat==='' || price===0 || papers===0) {
         return;
     }
     if (!validatePapersInWallet(ticker,papers)){
@@ -17,28 +17,28 @@ export function sellPaper() {
         return;
     } 
     clearInputElements();
-    executeTrade('sold',ticker,-papers,cost)
+    executeTrade('sold',dateFormat,ticker,-papers,price)
 }
 
 export async function buyPaper() {
-    let { ticker,cost,papers } = fetchInput() || {ticker: '',cost: 0,papers: 0};
-    if (ticker==='' || cost===0 || papers===0) {
+    let { ticker,dateFormat,price,papers } = fetchInput() || {ticker: '',dateFormat:'',price: 0,papers: 0};
+    if (ticker==='' || dateFormat==='' || price===0 || papers===0) {
         return;
     }
-    if (wallet.liquid < papers*cost) {
-        console.error(`Cannot buy ${papers} papers for $${cost} it is more then $${wallet.liquid.toFixed(2)} liquid in your wallet`);
+    if (wallet.liquid < papers*price) {
+        console.error(`Cannot buy ${papers} papers for $${price} it is more then $${wallet.liquid.toFixed(2)} liquid in your wallet`);
         return;
     }
 
     clearInputElements();
-    await executeTrade('bought',ticker,papers,cost);
+    await executeTrade('bought',dateFormat,ticker,papers,price);
 }
 
-export async function executeTrade(type,ticker,papers,cost) {
-    await fetchRealTimePrice(ticker); 
-    updateTradeHistoryList(type,ticker,cost,papers);
+export async function executeTrade(type,dateFormat,ticker,papers,price) {
+    // await fetchRealTimePrice(ticker); //??
+    updateTradeHistoryList(type,dateFormat,ticker,price,papers);
     renderTradeHistoryListHTML(); 
-    updateWallet(ticker,papers,cost);
+    updateWallet(ticker,papers,price);
     renderWallet();
     renderPortfolio();
 }
@@ -47,6 +47,7 @@ async function fetchRealTimePrice(ticker) {
     const { isUpToDate, index } = checkInCache(ticker);
     let price;
     if (!isUpToDate) {
+        console.log('fetching real time price');
         price = await getLastClosingAPI(ticker);
         const date = new Date();
         if (index>=0) {
@@ -57,6 +58,24 @@ async function fetchRealTimePrice(ticker) {
     } else {
         price = tickersPricesCache[index].price;
     }
+    return price;
+}
+
+async function fetchPriceWithDate(ticker,dateFormat) {
+    // const { isUpToDate, index } = checkInCacheWithDate(ticker,dateFormat);
+    // checkInCacheWithDate(ticker,dateFormat);
+    let price = await getPriceWithDateAPI(ticker,dateFormat);
+    // if (!isUpToDate) {
+    //     // price = await getPriceWithDateAPI(ticker,dateFormat);
+    //     // const date = new Date();
+    //     // if (index>=0) {
+    //         // tickersPricesCache.splice(index,1);
+    //     // }
+    //     // tickersPricesCache.push({ticker,price,date});
+    //     // localStorage.setItem('tickersPricesCache',JSON.stringify(tickersPricesCache));    
+    // } else {
+    //     price = tickersPricesCache[index].price;
+    // }
     return price;
 }
 
@@ -75,7 +94,6 @@ function checkInCache(ticker) {
             }
         }
     });
-    // console.log(isUpToDate);
     return { isUpToDate,index };
 }
 
@@ -84,6 +102,15 @@ function upToDate(date) {
     return date.getFullYear() === today.getFullYear() &&
     date.getMonth() === today.getMonth() &&
     date.getDate() === today.getDate();
+}
+
+async function getPriceWithDateAPI(ticker,dateFormat) {
+    const response = await fetch(`https://api.polygon.io/v1/open-close/${ticker}/${dateFormat}?adjusted=true&apiKey=${polygonAPIKey}`);
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    return data.close;    
 }
 
 async function getLastClosingAPI(ticker) {
@@ -95,16 +122,19 @@ async function getLastClosingAPI(ticker) {
     return data.results[0].c;    
 }
 
-export async function setCostInput(ticker) {
+export async function setPriceInput(ticker,dateFormat) {
     if (!validateTicker(ticker)) {
         return;
     }
-    const cost = await fetchRealTimePrice(ticker);
-    document.querySelector('.js-cost-input').value = cost;
+    // if (!validateDateFormat(dateFormat)) {
+    //     return;
+    // }
+    const price = await fetchPriceWithDate(ticker,dateFormat);
+    document.querySelector('.js-price-input').value = price;
 
 }
 
-function validateTicker(ticker) {
+export function validateTicker(ticker) {
     const tickerOptions = document.getElementById('ticker-options').getElementsByTagName('option');
     for (let i = 0; i < tickerOptions.length; i++) {
         if (ticker === tickerOptions[i].value) {
@@ -117,8 +147,10 @@ function validateTicker(ticker) {
 function fetchInput() {
     let tickerElement = document.querySelector('.js-ticker-input');
     let ticker = tickerElement.value;
-    let costElement = document.querySelector('.js-cost-input');
-    let cost = Number(costElement.value);
+    let dateElement = document.querySelector('.js-date-input');
+    let dateFormat = dateElement.value;
+    let priceElement = document.querySelector('.js-price-input');
+    let price = Number(priceElement.value);
     let papersElement = document.querySelector('.js-papers-input');
     let papers = Number(papersElement.value);
 
@@ -126,47 +158,48 @@ function fetchInput() {
         console.error('Not a valid ticker');
         return;
     }
-
+    //validate date?
     return {
         ticker,
-        cost,
+        dateFormat,
+        price,
         papers
     };
 }
 
 export function clearInputElements() {
     document.querySelector('.js-ticker-input').value = '';
-    document.querySelector('.js-cost-input').value = '';
+    document.querySelector('.js-date-input').value = '';
+    document.querySelector('.js-price-input').value = '';
     document.querySelector('.js-papers-input').value = '';
     
 }
 
 function recalculateAvgPrice(tickerRecalculate) {
-    let totalCost=0,totalPapers=0;
+    let totalPrice=0,totalPapers=0;
     tradeHistoryList.forEach(tradeHistoryObject => {
-        const { type,ticker,cost,papers } = tradeHistoryObject;
+        const { type,ticker,price,papers } = tradeHistoryObject;
         if (ticker===tickerRecalculate && type==='bought') {
-            totalCost+=(cost*papers);
+            totalPrice+=(price*papers);
             totalPapers+=papers;
         }
     });
     for (let i=0; i<wallet.assets.length; i++) {
         const assetObject = wallet.assets[i];
         if (assetObject.ticker===tickerRecalculate) {
-            assetObject.avgBuyPrice=totalCost/totalPapers;
+            assetObject.avgBuyPrice=totalPrice/totalPapers;
             return;
         }
     }
 }
 
-//function undoTrade(ticker,papers,cost,index) {
-export function undoTrade(ticker,papers,cost,index) {
+export function undoTrade(ticker,papers,price,index) {
     if (papers<0 && !validatePapersInWallet(ticker,-papers)) {
         console.error('Not enought papers in your waller');
         return; 
     }
     removeTradeHistoryObject(index);
-    updateWallet(ticker,papers,cost);
+    updateWallet(ticker,papers,price);
     recalculateAvgPrice(ticker);
     renderWallet();
     renderPortfolio();
@@ -214,9 +247,9 @@ async function renderPortfolio() {
         const { ticker,papers,avgBuyPrice } = wallet.assets[i];
         let currentPrice = await fetchRealTimePrice(ticker);
         let percentage = (currentPrice/avgBuyPrice - 1)*100;
-        let totalAssetCost = papers*avgBuyPrice;
+        let totalAssetPrice = papers*avgBuyPrice;
         let totalAssetValue = papers*currentPrice;
-        let totalAssetProfit = totalAssetValue-totalAssetCost;
+        let totalAssetProfit = totalAssetValue-totalAssetPrice;
         let plusHTML='', portfolioProfitClassHTML='';
         if (percentage>0) {
             plusHTML='+';
@@ -231,7 +264,7 @@ async function renderPortfolio() {
         <div ${portfolioProfitClassHTML}>${papers}</div>
         <div ${portfolioProfitClassHTML}>${avgBuyPrice.toFixed(2)}</div> 
         <div ${portfolioProfitClassHTML}>${currentPrice.toFixed(2)}</div>
-        <div ${portfolioProfitClassHTML}>$${totalAssetCost.toFixed(2)}</div>
+        <div ${portfolioProfitClassHTML}>$${totalAssetPrice.toFixed(2)}</div>
         <div ${portfolioProfitClassHTML}>$${totalAssetValue.toFixed(2)}</div>
         <div ${portfolioProfitClassHTML}>$${totalAssetProfit.toFixed(2)}</div>
         <div ${portfolioProfitClassHTML}>${plusHTML}${percentage.toFixed(2)}%</div>

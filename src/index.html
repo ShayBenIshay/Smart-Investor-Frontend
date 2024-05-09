@@ -14,8 +14,9 @@
     
     <div class="trade-input-grid">
         <input type="text" placeholder="Ticker" class="js-ticker-input ticker-input" list="ticker-options">
+        <input class="js-date-input date-input" type="date" id="datepicker" placeholder="yyyy-mm-dd (optional)">
         <input placeholder="# of papers" class="js-papers-input papers-input" type="number">
-        <input placeholder="Cost" class="js-cost-input cost-input" type="number">
+        <input placeholder="Price" class="js-price-input price-input" type="number">
         <div>
             <button class="buy-button js-buy-button">Buy</button>
             <button class="sell-button js-sell-button">Sell</button>
@@ -37,6 +38,13 @@
     <div id="Tab1" class="tabcontent">
         <div>
             <p>Trading History</p>
+            <div class="trade-grid">
+                <p>Date</p>
+                <p>Type</p>
+                <p>Ticker</p>
+                <p>Papers</p>
+                <p>Price</p>
+            </div>
             <div class="js-trade-list trade-grid"></div>        
         </div>
     </div>  

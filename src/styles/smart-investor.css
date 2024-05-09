@@ -6,7 +6,7 @@ body {
 .trade-grid,
 .trade-input-grid {
     display: grid;
-    grid-template-columns: 200px 150px 150px 100px 250px;
+    grid-template-columns: 100px 100px 150px 150px 100px 250px;
     column-gap: 10px;
     row-gap: 10px;
     column-gap: 0px;
@@ -23,7 +23,7 @@ body {
 .trade-input-grid {
     margin-top: 20px;
     margin-left: 70px;
-    grid-template-columns: 200px 150px 150px 100px 250px 150px 100px 100px;
+    grid-template-columns: 200px 150px 150px 150px 100px 250px 150px 100px 100px;
     margin-bottom: 10px;
     align-items: stretch;
     column-gap: 5px;
@@ -32,7 +32,7 @@ body {
 .wallet-input,
 .papers-input,
 .ticker-input,
-.cost-input {
+.price-input {
     font-size: 15px;
     padding: 6px;
 }

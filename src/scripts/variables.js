@@ -11,7 +11,6 @@ export let wallet = JSON.parse(localStorage.getItem('wallet')) || {
     //};
     ]
 };
-
 export let tickersList= JSON.parse(localStorage.getItem('tickersList')) || [];
 export const isSavingExcessCalls = true; //false value not supported yet.
 export let tickersPricesCache = JSON.parse(localStorage.getItem('tickersPricesCache')) || [
@@ -35,12 +34,16 @@ async function initalValues() {
         assets: []
     };
     tickersPricesCache = JSON.parse(localStorage.getItem('tickersPricesCache')) || [];
-
     if (wallet.assets.length===0) {
-        await executeTrade('bought','AAPL',3,110);//some initial values to test the Portfolio & trade history
-        await executeTrade('bought','NVDA',2,800);//some initial values to test the Portfolio & trade history
-        await executeTrade('sold','NVDA',-1,900);//some initial values to test the Portfolio & trade history
-        await executeTrade('bought','AACG',5,10);//some initial values to test the Portfolio & trade history                
+        const todayDate = new Date();
+        const yesterdayDate = new Date(todayDate);
+        yesterdayDate.setDate(todayDate.getDate()-1);
+        const yesterdayDateFormat = yesterdayDate.toISOString().substring(0, 10);
+        console.log(yesterdayDateFormat);
+        await executeTrade('bought',yesterdayDateFormat,'AAPL',3,110);//some initial values to test the Portfolio & trade history
+        await executeTrade('bought',yesterdayDateFormat,'NVDA',2,800);//some initial values to test the Portfolio & trade history
+        await executeTrade('sold',yesterdayDateFormat,'NVDA',-1,900);//some initial values to test the Portfolio & trade history
+        await executeTrade('bought',yesterdayDateFormat,'AACG',5,10);//some initial values to test the Portfolio & trade history                
     }   
 }
 

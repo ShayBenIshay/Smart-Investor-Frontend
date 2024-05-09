@@ -3,19 +3,21 @@ import { undoTrade } from './smart-investor.js';
 
 renderTradeHistoryListHTML();
 
-export function updateTradeHistoryList(type,ticker,cost,papers) {
+export function updateTradeHistoryList(type,dateFormat,ticker,price,papers) {
     if (type==='sold') {
         tradeHistoryList.push({
             type: 'sold',
+            dateFormat,
             ticker,
-            cost,
+            price,
             papers
         });
     } else if (type==='bought') {
         tradeHistoryList.push({
             type: 'bought',
+            dateFormat,
             ticker,
-            cost,
+            price,
             papers
         });
     }
@@ -30,12 +32,13 @@ export function removeTradeHistoryObject(index) {
 export function renderTradeHistoryListHTML() {
     let tradeHistoryListHTML = '';
     tradeHistoryList.forEach((tradeHistoryObject,index) => {
-        const { type, ticker, cost, papers } = tradeHistoryObject;
+        const { type,dateFormat,ticker,price,papers } = tradeHistoryObject;
         const html = `
+        <div>${dateFormat}:</div>
         <div class="${type}-row">${type}</div>
         <div class="${type}-row">${ticker}</div>
         <div class="${type}-row">${papers}</div>
-        <div class="${type}-row">$${cost}</div>
+        <div class="${type}-row">$${price}</div>
         <button id="js-undo-${index}" class="undo-button">Undo</button>
         `;
         tradeHistoryListHTML += html;
@@ -44,9 +47,9 @@ export function renderTradeHistoryListHTML() {
     document.querySelector('.js-trade-list').innerHTML = tradeHistoryListHTML;    
     
     tradeHistoryList.forEach((tradeHistoryObject,index) => {
-        const { ticker, cost, papers } = tradeHistoryObject;
+        const { ticker, price, papers } = tradeHistoryObject;
         document.getElementById(`js-undo-${index}`).addEventListener('click', () => {
-            undoTrade(ticker,-papers,cost,index);
+            undoTrade(ticker,-papers,price,index);
         });
     });
 }

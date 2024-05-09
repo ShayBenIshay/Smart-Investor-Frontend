@@ -1,5 +1,5 @@
 import { loadTickersList } from './js-load-tickers.js';
-import { buyPaper,sellPaper,deposit,withdrawal,setCostInput } from './smart-investor.js';
+import { buyPaper,sellPaper,deposit,withdrawal,setPriceInput } from './smart-investor.js';
 import { resetValues } from './variables.js';
 //event listeners from smart-investor.js
 document.querySelector('.js-buy-button').addEventListener('click', async () => await buyPaper());
@@ -7,7 +7,7 @@ document.querySelector('.js-sell-button').addEventListener('click', () => sellPa
 document.querySelector('.js-deposit').addEventListener('click', () => deposit());
 document.querySelector('.js-withdrawal').addEventListener('click', () => withdrawal());
 document.querySelector('.js-reset').addEventListener('click', () => resetValues());
-document.querySelectorAll('.js-cost-input, .js-papers-input').forEach(element => {
+document.querySelectorAll('.js-price-input, .js-papers-input').forEach(element => {
   element.addEventListener('keydown', function(event) {
     if (event.key === 'b') {
       buyPaper();
@@ -25,21 +25,35 @@ document.querySelector('.js-wallet-input').addEventListener('keydown', function(
 document.querySelector('.js-wallet-input').addEventListener("input", () => {
   const walletInputElement = document.querySelector('.js-wallet-input');
   const walletInputStr = walletInputElement.value;
-  // console.log(walletInputStr);
-  // if (walletInputStr.includes('-')) {
-  //   console.log('includes - ');
-  //   walletInputElement.value = walletInputStr.replace('-', '');
-  // }
-
   const walletInput = Number(walletInputStr);
   if (walletInput <= 0) {
       walletInputElement.value = '';
   }
 });
-document.querySelector('.js-ticker-input').addEventListener('change', function() {
-    let selectedValue = this.value; // Get the value of the selected option
-    // Call your function here, passing the selected value if needed
-    setCostInput(selectedValue);
+document.querySelector('.js-ticker-input').addEventListener('change', () => {
+  const dateInputElement = document.querySelector('.js-date-input');
+  
+  if (dateInputElement.value==='') {
+    let todayDate = new Date();
+    let yesterdayDate = new Date(todayDate);
+    yesterdayDate.setDate(todayDate.getDate() - 1);
+    const yesterdayDateFormat = yesterdayDate.toISOString().substring(0, 10); 
+    dateInputElement.value = yesterdayDateFormat;  
+  }
+//for now i will not fetch the real price before the date input has entered
+// const tickerInput = document.querySelector('.js-ticker-input').value;
+    // setPriceInput(tickerInput,dateInputElement.value);
+});
+
+document.querySelector('.js-date-input').addEventListener('blur', () => {
+  const tickerInputElement = document.querySelector('.js-ticker-input');
+  const tickerInput = tickerInputElement.value;
+  if (tickerInput==='') {
+    return;
+  }
+  const dateInputElement = document.querySelector('.js-date-input');
+  const dateFormat = dateInputElement.value;
+    setPriceInput(tickerInput,dateFormat);
 });
 
 //event listener from js-load-tickers.js
