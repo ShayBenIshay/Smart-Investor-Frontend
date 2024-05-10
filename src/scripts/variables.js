@@ -13,14 +13,8 @@ export let wallet = JSON.parse(localStorage.getItem('wallet')) || {
 };
 export let tickersList= JSON.parse(localStorage.getItem('tickersList')) || [];
 export const isSavingExcessCalls = true; //false value not supported yet.
-export let tickersPricesCache = JSON.parse(localStorage.getItem('tickersPricesCache')) || [
-    // tickerPriceObjectExample = {
-    //     ticker,
-    //     price,
-    //     date
-    // }
-
-];
+let tickersPricesCacheMapJSON = JSON.parse(localStorage.getItem('tickersPricesCacheMap')) || '';
+export let tickersPricesCacheMap = new Map(tickersPricesCacheMapJSON); //example: { ticker , [{dateFormat,price}] }
 
 //script for variables:
 initalValues();
@@ -33,13 +27,15 @@ async function initalValues() {
         liquid: 10000,
         assets: []
     };
-    tickersPricesCache = JSON.parse(localStorage.getItem('tickersPricesCache')) || [];
+    let tickersPricesCacheMapJSON = JSON.parse(localStorage.getItem('tickersPricesCacheMap')) || '';
+    tickersPricesCacheMap = new Map(tickersPricesCacheMapJSON);
+
+    // tickersPricesCache = JSON.parse(localStorage.getItem('tickersPricesCache')) || [];
     if (wallet.assets.length===0) {
         const todayDate = new Date();
         const yesterdayDate = new Date(todayDate);
         yesterdayDate.setDate(todayDate.getDate()-1);
         const yesterdayDateFormat = yesterdayDate.toISOString().substring(0, 10);
-        console.log(yesterdayDateFormat);
         await executeTrade('bought',yesterdayDateFormat,'AAPL',3,110);//some initial values to test the Portfolio & trade history
         await executeTrade('bought',yesterdayDateFormat,'NVDA',2,800);//some initial values to test the Portfolio & trade history
         await executeTrade('sold',yesterdayDateFormat,'NVDA',-1,900);//some initial values to test the Portfolio & trade history
@@ -51,6 +47,6 @@ export function resetValues() {
     clearInputElements();
     localStorage.removeItem('wallet')
     localStorage.removeItem('tradeHistoryList');
-    localStorage.removeItem('tickersPricesCache');
+    localStorage.removeItem('tickersPricesCacheMap'); //?
     initalValues();
 }

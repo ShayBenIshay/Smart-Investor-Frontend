@@ -1,4 +1,4 @@
-import { tradeHistoryList,wallet,tickersPricesCache } from './variables.js';
+import { tradeHistoryList,wallet, tickersPricesCacheMap } from './variables.js';
 import { polygonAPIKey } from "../api-token.js"
 import { updateTradeHistoryList,removeTradeHistoryObject,renderTradeHistoryListHTML } from './trade-history.js';
 import { updateWallet,renderWallet,validatePapersInWallet } from './wallet.js';
@@ -29,13 +29,15 @@ export async function buyPaper() {
         console.error(`Cannot buy ${papers} papers for $${price} it is more then $${wallet.liquid.toFixed(2)} liquid in your wallet`);
         return;
     }
+    if (!validateDateFormat(dateFormat)) {
+        return;
+    }
 
     clearInputElements();
     await executeTrade('bought',dateFormat,ticker,papers,price);
 }
 
 export async function executeTrade(type,dateFormat,ticker,papers,price) {
-    // await fetchRealTimePrice(ticker); //??
     updateTradeHistoryList(type,dateFormat,ticker,price,papers);
     renderTradeHistoryListHTML(); 
     updateWallet(ticker,papers,price);
@@ -44,64 +46,53 @@ export async function executeTrade(type,dateFormat,ticker,papers,price) {
 }
 
 async function fetchRealTimePrice(ticker) {
-    const { isUpToDate, index } = checkInCache(ticker);
-    let price;
-    if (!isUpToDate) {
-        console.log('fetching real time price');
+    const yesterdayFormat = getYesterdayFormat();
+    let price = checkInCacheWithDate(ticker,yesterdayFormat)
+    if (price<0) {
         price = await getLastClosingAPI(ticker);
-        const date = new Date();
-        if (index>=0) {
-            tickersPricesCache.splice(index,1);
+    }
+    if (price>0) {
+        if (!tickersPricesCacheMap.has(ticker)) {
+            tickersPricesCacheMap.set(ticker,[]);
         }
-        tickersPricesCache.push({ticker,price,date});
-        localStorage.setItem('tickersPricesCache',JSON.stringify(tickersPricesCache));    
-    } else {
-        price = tickersPricesCache[index].price;
+        let exists = false;
+        tickersPricesCacheMap.get(ticker).forEach( cacheObject => {
+            let { dateFormat } = cacheObject;
+            if (dateFormat===yesterdayFormat) {
+                exists = true;
+            }
+        });
+        if (!exists) {
+            tickersPricesCacheMap.get(ticker).push({dateFormat: yesterdayFormat, price});
+        }
+        let cacheArray = Array.from(tickersPricesCacheMap);
+        localStorage.setItem('tickersPricesCacheMap',JSON.stringify(cacheArray));        
     }
     return price;
 }
 
 async function fetchPriceWithDate(ticker,dateFormat) {
-    // const { isUpToDate, index } = checkInCacheWithDate(ticker,dateFormat);
-    // checkInCacheWithDate(ticker,dateFormat);
-    let price = await getPriceWithDateAPI(ticker,dateFormat);
-    // if (!isUpToDate) {
-    //     // price = await getPriceWithDateAPI(ticker,dateFormat);
-    //     // const date = new Date();
-    //     // if (index>=0) {
-    //         // tickersPricesCache.splice(index,1);
-    //     // }
-    //     // tickersPricesCache.push({ticker,price,date});
-    //     // localStorage.setItem('tickersPricesCache',JSON.stringify(tickersPricesCache));    
-    // } else {
-    //     price = tickersPricesCache[index].price;
-    // }
+    const yesterdayFormat = getYesterdayFormat();
+    let price = checkInCacheWithDate(ticker,yesterdayFormat);
+    if (price<0) {
+        price = await getPriceWithDateAPI(ticker,dateFormat);
+    }
     return price;
 }
 
-//if this function returns {_,-1} ticker not found
-//if returned {false,index>=0} index is in cache but the price is not from this day
-//if returned {true,index>=0} it is up to date
-function checkInCache(ticker) {
-    let isUpToDate=false;
-    let index=-1
-    tickersPricesCache.forEach((tickerPriceObject,i) => {
-        if (tickerPriceObject.ticker===ticker) {
-            index = i;
-            let tickerPriceDate = new Date(tickerPriceObject.date);
-            if (upToDate(tickerPriceDate)) {
-                isUpToDate = true;
+function checkInCacheWithDate(tickerToCheck,dateFormatToCheck) {
+    for (let [ticker, pricesArr] of tickersPricesCacheMap.entries()) {
+        if (tickerToCheck===ticker) {
+            for (let i=0; i<pricesArr.length; i++) {
+                let { dateFormat,price } = pricesArr[i];
+                if (dateFormatToCheck === dateFormat) {
+                    return price;
+                }
             }
+            return -1;
         }
-    });
-    return { isUpToDate,index };
-}
-
-function upToDate(date) {
-    const today = new Date();
-    return date.getFullYear() === today.getFullYear() &&
-    date.getMonth() === today.getMonth() &&
-    date.getDate() === today.getDate();
+    }
+    return -1;
 }
 
 async function getPriceWithDateAPI(ticker,dateFormat) {
@@ -116,19 +107,17 @@ async function getPriceWithDateAPI(ticker,dateFormat) {
 async function getLastClosingAPI(ticker) {
     const response = await fetch(`https://api.polygon.io/v2/aggs/ticker/${ticker}/prev?adjusted=true&apiKey=${polygonAPIKey}`);
     if (!response.ok) {
-        throw new Error('Network response was not ok');
+        console.error('Network response was not ok');
+        return -1;
     }
     const data = await response.json();
     return data.results[0].c;    
 }
 
 export async function setPriceInput(ticker,dateFormat) {
-    if (!validateTicker(ticker)) {
+    if (!validateTicker(ticker) || !validateDateFormat(dateFormat)) {
         return;
     }
-    // if (!validateDateFormat(dateFormat)) {
-    //     return;
-    // }
     const price = await fetchPriceWithDate(ticker,dateFormat);
     document.querySelector('.js-price-input').value = price;
 
@@ -239,17 +228,41 @@ export function withdrawal() {
     walletInputElement.value = '';
 }
 
+function validateDateFormat(dateFormat) {
+    let dateParts = dateFormat.split("-");
+    let dateObject = new Date(dateParts[0],dateParts[1]-1,dateParts[2]);
+    if (dateObject.getDay() === 0 || dateObject.getDay()===6) {
+        const day = dateObject.getDay()===0 ? 'Sunday' : 'Saturday';
+        console.error(`${day} is not a trading day`);
+        return false;
+    }
+    return true;
+}
+
+export function getYesterdayFormat() {
+    let todayDate = new Date();
+    let yesterdayDate = new Date(todayDate);
+    yesterdayDate.setDate(todayDate.getDate() - 1);
+    const yesterdayFormat = yesterdayDate.toISOString().substring(0, 10); 
+    return yesterdayFormat;
+}
+
+
 //rendering functions
 async function renderPortfolio() {
     let assetsListHTML = '';
 
     for (let i=0; i<wallet.assets.length; i++) {
         const { ticker,papers,avgBuyPrice } = wallet.assets[i];
+        let percentage,totalAssetValue,totalAssetProfit;
         let currentPrice = await fetchRealTimePrice(ticker);
-        let percentage = (currentPrice/avgBuyPrice - 1)*100;
         let totalAssetPrice = papers*avgBuyPrice;
-        let totalAssetValue = papers*currentPrice;
-        let totalAssetProfit = totalAssetValue-totalAssetPrice;
+        if (currentPrice != -1) {
+            //api limit exceeded it's limit. show udnefined value
+            percentage = ((currentPrice/avgBuyPrice - 1)*100).toFixed(2);
+            totalAssetValue = (papers*currentPrice).toFixed(2);
+            totalAssetProfit = (totalAssetValue-totalAssetPrice).toFixed(2);
+        }
         let plusHTML='', portfolioProfitClassHTML='';
         if (percentage>0) {
             plusHTML='+';
@@ -263,11 +276,11 @@ async function renderPortfolio() {
         <div ${portfolioProfitClassHTML}>${ticker}</div>
         <div ${portfolioProfitClassHTML}>${papers}</div>
         <div ${portfolioProfitClassHTML}>${avgBuyPrice.toFixed(2)}</div> 
-        <div ${portfolioProfitClassHTML}>${currentPrice.toFixed(2)}</div>
+            <div ${portfolioProfitClassHTML}>${currentPrice}</div>
         <div ${portfolioProfitClassHTML}>$${totalAssetPrice.toFixed(2)}</div>
-        <div ${portfolioProfitClassHTML}>$${totalAssetValue.toFixed(2)}</div>
-        <div ${portfolioProfitClassHTML}>$${totalAssetProfit.toFixed(2)}</div>
-        <div ${portfolioProfitClassHTML}>${plusHTML}${percentage.toFixed(2)}%</div>
+        <div ${portfolioProfitClassHTML}>$${totalAssetValue}</div>
+        <div ${portfolioProfitClassHTML}>$${totalAssetProfit}</div>
+        <div ${portfolioProfitClassHTML}>${plusHTML}${percentage}%</div>
         `;
         assetsListHTML +=html;
     }
