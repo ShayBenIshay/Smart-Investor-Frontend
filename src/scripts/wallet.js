@@ -1,6 +1,6 @@
 import { wallet } from './variables.js';
+import { renderWallet } from './render-HTML-elements.js';
 
-renderWallet();
 
 export function validatePapersInWallet(tickerToValidate,papersToValidate) {
     for (let i=0 ; i<wallet.assets.length ; i++) {
@@ -11,7 +11,13 @@ export function validatePapersInWallet(tickerToValidate,papersToValidate) {
     }
     return false;
 }
-
+export function validateWalletLiquid(papers,price){
+    if (wallet.liquid < papers*price) {
+        console.error(`Cannot buy ${papers} papers for $${price} it is more then $${wallet.liquid.toFixed(2)} liquid in your wallet`);
+        return false;
+    }
+    return true;
+}
 export function updateWallet(ticker,papers,cost) {
     wallet.liquid-=papers*cost;
     let isNewAsset = true;
@@ -39,7 +45,35 @@ export function updateWallet(ticker,papers,cost) {
     localStorage.setItem('wallet', JSON.stringify(wallet));
 }
 
-export function renderWallet() {
-    const walletElement = document.querySelector('.js-wallet');
-    walletElement.innerHTML = `Wallet liquidity: $${wallet.liquid.toFixed(2).replace(/\.00$/, '')}`;
+export function deposit() {
+    const walletInputElement = document.querySelector('.js-wallet-input');
+    const deposit = Number(walletInputElement.value);
+
+    if (deposit<=0) {
+        console.error(`$${deposit} is not a valid deposit`);
+        return;
+    }
+
+    wallet.liquid += deposit;
+    localStorage.setItem('wallet',JSON.stringify(wallet));
+    renderWallet();
+    walletInputElement.value = '';
+}
+
+export function withdrawal() {
+    const walletInputElement = document.querySelector('.js-wallet-input');
+    const withdrawal = Number(walletInputElement.value);
+
+    if (withdrawal<=0) {
+        console.error(`$${withdrawal} is not a valid withdrawal`);
+        return;
+    }
+    if (wallet.liquid - withdrawal < 0) {
+        console.error(`Cannot withdrawal $${withdrawal} it is more then $${wallet.liquid.toFixed(2)} liquid in your wallet`)
+        return;
+    }
+    wallet.liquid -= withdrawal;
+    localStorage.setItem('wallet',JSON.stringify(wallet));
+    renderWallet();
+    walletInputElement.value = '';
 }

@@ -1,4 +1,5 @@
-import { executeTrade,clearInputElements } from "./smart-investor.js";
+import { executeTrade } from "./smart-investor.js";
+import { clearInputElements } from "./helper-functions.js";
 //variables definition
 export let tradeHistoryList = JSON.parse(localStorage.getItem('tradeHistoryList')) || [];
 export let wallet = JSON.parse(localStorage.getItem('wallet')) || {

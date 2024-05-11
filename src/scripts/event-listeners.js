@@ -1,6 +1,8 @@
 import { loadTickersList } from './js-load-tickers.js';
-import { buyPaper,sellPaper,deposit,withdrawal,setPriceInput,getYesterdayFormat } from './smart-investor.js';
+import { buyPaper,sellPaper,setPriceInput } from './smart-investor.js';
 import { resetValues } from './variables.js';
+import { deposit,withdrawal } from './wallet.js';
+import { getYesterdayFormat } from './helper-functions.js';
 
 //event listeners from smart-investor.js
 document.querySelector('.js-buy-button').addEventListener('click', async () => await buyPaper());
