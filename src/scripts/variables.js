@@ -1,7 +1,7 @@
-import { executeTrade } from "./smart-investor.js";
+import { executeTransaction } from "./smart-investor.js";
 import { clearInputElements } from "./helper-functions.js";
 //variables definition
-export let tradeHistoryList = JSON.parse(localStorage.getItem('tradeHistoryList')) || [];
+export let transactionHistoryList = JSON.parse(localStorage.getItem('transactionHistoryList')) || [];
 export let wallet = JSON.parse(localStorage.getItem('wallet')) || {
     liquid: 10000,
     assets: [
@@ -23,7 +23,7 @@ initalValues();
 
 //functions
 async function initalValues() {
-    tradeHistoryList = JSON.parse(localStorage.getItem('tradeHistoryList')) || [];
+    transactionHistoryList = JSON.parse(localStorage.getItem('transactionHistoryList')) || [];
     wallet = JSON.parse(localStorage.getItem('wallet')) || {
         liquid: 10000,
         assets: []
@@ -37,17 +37,17 @@ async function initalValues() {
         const yesterdayDate = new Date(todayDate);
         yesterdayDate.setDate(todayDate.getDate()-1);
         const yesterdayDateFormat = yesterdayDate.toISOString().substring(0, 10);
-        await executeTrade('bought',yesterdayDateFormat,'AAPL',3,110);//some initial values to test the Portfolio & trade history
-        await executeTrade('bought',yesterdayDateFormat,'NVDA',2,800);//some initial values to test the Portfolio & trade history
-        await executeTrade('sold',yesterdayDateFormat,'NVDA',-1,900);//some initial values to test the Portfolio & trade history
-        await executeTrade('bought',yesterdayDateFormat,'AACG',5,10);//some initial values to test the Portfolio & trade history                
+        await executeTransaction('bought',yesterdayDateFormat,'AAPL',3,110);//some initial values to test the Portfolio & transaction history
+        await executeTransaction('bought',yesterdayDateFormat,'NVDA',2,800);//some initial values to test the Portfolio & transaction history
+        await executeTransaction('sold',yesterdayDateFormat,'NVDA',-1,900);//some initial values to test the Portfolio & transaction history
+        await executeTransaction('bought',yesterdayDateFormat,'AACG',5,10);//some initial values to test the Portfolio & transaction history                
     }   
 }
 
 export function resetValues() {
     clearInputElements();
     localStorage.removeItem('wallet')
-    localStorage.removeItem('tradeHistoryList');
+    localStorage.removeItem('transactionHistoryList');
     localStorage.removeItem('tickersPricesCacheMap'); //?
     initalValues();
 }

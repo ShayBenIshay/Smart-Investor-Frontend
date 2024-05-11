@@ -3,8 +3,8 @@ body {
 }
 
 .portfolio-grid,
-.trade-grid,
-.trade-input-grid {
+.transaction-grid,
+.transaction-input-grid {
     display: grid;
     grid-template-columns: 100px 100px 150px 150px 100px 250px;
     column-gap: 10px;
@@ -20,7 +20,7 @@ body {
 
 }
 
-.trade-input-grid {
+.transaction-input-grid {
     margin-top: 20px;
     margin-left: 70px;
     grid-template-columns: 200px 150px 150px 150px 100px 250px 150px 100px 100px;

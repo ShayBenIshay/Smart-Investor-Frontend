@@ -1,8 +1,8 @@
 import { fetchRealTimePrice } from "./tickers-prices-cache.js";
-import { tradeHistoryList,wallet } from "./variables.js";
-import { undoTrade } from "./smart-investor.js";
+import { transactionHistoryList,wallet } from "./variables.js";
+import { undoTransaction } from "./smart-investor.js";
 
-renderTradeHistoryListHTML();
+renderTransactionHistoryListHTML();
 renderWallet(); 
 await renderPortfolio();
 
@@ -49,10 +49,10 @@ export function renderWallet() {
     walletElement.innerHTML = `Wallet liquidity: $${wallet.liquid.toFixed(2).replace(/\.00$/, '')}`;
 }
 
-export function renderTradeHistoryListHTML() {
-    let tradeHistoryListHTML = '';
-    tradeHistoryList.forEach((tradeHistoryObject,index) => {
-        const { type,dateFormat,ticker,price,papers } = tradeHistoryObject;
+export function renderTransactionHistoryListHTML() {
+    let transactionHistoryListHTML = '';
+    transactionHistoryList.forEach((transactionHistoryObject,index) => {
+        const { type,dateFormat,ticker,price,papers } = transactionHistoryObject;
         const html = `
         <div>${dateFormat}:</div>
         <div class="${type}-row">${type}</div>
@@ -61,15 +61,15 @@ export function renderTradeHistoryListHTML() {
         <div class="${type}-row">$${price}</div>
         <button id="js-undo-${index}" class="undo-button">Undo</button>
         `;
-        tradeHistoryListHTML += html;
+        transactionHistoryListHTML += html;
     });
 
-    document.querySelector('.js-trade-list').innerHTML = tradeHistoryListHTML;    
+    document.querySelector('.js-transaction-list').innerHTML = transactionHistoryListHTML;    
     
-    tradeHistoryList.forEach((tradeHistoryObject,index) => {
-        const { ticker, price, papers } = tradeHistoryObject;
+    transactionHistoryList.forEach((transactionHistoryObject,index) => {
+        const { ticker, price, papers } = transactionHistoryObject;
         document.getElementById(`js-undo-${index}`).addEventListener('click', () => {
-            undoTrade(ticker,-papers,price,index);
+            undoTransaction(ticker,-papers,price,index);
         });
     });
 }

@@ -1,8 +1,8 @@
 // import { wallet } from './variables.js';
 import { polygonAPIKey } from "../api-token.js"
-import { updateTradeHistoryList,removeTradeHistoryObject } from './trade-history.js';
+import { updateTransactionHistoryList,removeTransactionHistoryObject } from './transaction-history.js';
 import { updateWallet,validateWalletLiquid,validatePapersInWallet } from './wallet.js';
-import { renderPortfolio,renderTradeHistoryListHTML,renderWallet } from './render-HTML-elements.js';
+import { renderPortfolio,renderTransactionHistoryListHTML as renderTransactionHistoryListHTML,renderWallet } from './render-HTML-elements.js';
 import { validateDateFormat,validateTicker,recalculateAvgPrice,clearInputElements, fetchInput } from './helper-functions.js';
 import { fetchPriceWithDate } from './tickers-prices-cache.js';
 
@@ -16,7 +16,7 @@ export function sellPaper() {
         return;
     } 
     clearInputElements();
-    executeTrade('sold',dateFormat,ticker,-papers,price)
+    executeTransaction('sold',dateFormat,ticker,-papers,price)
 }
 
 export async function buyPaper() {
@@ -29,12 +29,12 @@ export async function buyPaper() {
     }
 
     clearInputElements();
-    await executeTrade('bought',dateFormat,ticker,papers,price);
+    await executeTransaction('bought',dateFormat,ticker,papers,price);
 }
 
-export async function executeTrade(type,dateFormat,ticker,papers,price) {
-    updateTradeHistoryList(type,dateFormat,ticker,price,papers);
-    renderTradeHistoryListHTML(); 
+export async function executeTransaction(type,dateFormat,ticker,papers,price) {
+    updateTransactionHistoryList(type,dateFormat,ticker,price,papers);
+    renderTransactionHistoryListHTML(); 
     updateWallet(ticker,papers,price);
     renderWallet();
     renderPortfolio();
@@ -68,15 +68,15 @@ export async function setPriceInput(ticker,dateFormat) {
 
 }
 
-export function undoTrade(ticker,papers,price,index) {
+export function undoTransaction(ticker,papers,price,index) {
     if (papers<0 && !validatePapersInWallet(ticker,-papers)) {
         console.error('Not enought papers in your waller');
         return; 
     }
-    removeTradeHistoryObject(index);
+    removeTransactionHistoryObject(index);
     updateWallet(ticker,papers,price);
     recalculateAvgPrice(ticker);
     renderWallet();
     renderPortfolio();
-    renderTradeHistoryListHTML();    
+    renderTransactionHistoryListHTML();    
 }

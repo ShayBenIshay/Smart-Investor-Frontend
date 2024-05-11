@@ -12,7 +12,7 @@
 <body>
     
     
-    <div class="trade-input-grid">
+    <div class="transaction-input-grid">
         <input type="text" placeholder="Ticker" class="js-ticker-input ticker-input" list="ticker-options">
         <input class="js-date-input date-input" type="date" id="datepicker" placeholder="yyyy-mm-dd (optional)">
         <input placeholder="# of papers" class="js-papers-input papers-input" type="number">
@@ -31,21 +31,21 @@
     </div>
 
     <div class="tab">
-        <button class="tablinks" onclick="openTab(event, 'Tab1')">Trading History</button>
+        <button class="tablinks" onclick="openTab(event, 'Tab1')">Transaction History</button>
         <button class="tablinks" onclick="openTab(event, 'Tab2')">Portfolio</button>
     </div>
     
     <div id="Tab1" class="tabcontent">
         <div>
-            <p>Trading History</p>
-            <div class="trade-grid">
+            <p>Transaction History</p>
+            <div class="transaction-grid">
                 <p>Date</p>
                 <p>Type</p>
                 <p>Ticker</p>
                 <p>Papers</p>
                 <p>Price</p>
             </div>
-            <div class="js-trade-list trade-grid"></div>        
+            <div class="js-transaction-list transaction-grid"></div>        
         </div>
     </div>  
     <div id="Tab2" class="tabcontent">
@@ -65,7 +65,7 @@
   
     <script type="module" src="scripts/smart-investor.js"></script>
     <script type="module" src="scripts/wallet.js"></script>
-    <script type="module" src="scripts/trade-history.js"></script>
+    <script type="module" src="scripts/transaction-history.js"></script>
     <script type="module" src="scripts/event-listeners.js"></script>
     <script type="module" src="scripts/js-load-tickers.js"></script>
     <script type="module" src="scripts/render-HTML-elements.js"></script>

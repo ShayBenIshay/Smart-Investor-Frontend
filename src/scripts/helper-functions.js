@@ -1,4 +1,4 @@
-import { tradeHistoryList,wallet } from "./variables.js";
+import { transactionHistoryList,wallet } from "./variables.js";
 //Dates
 export function getYesterdayFormat() {
     let todayDate = new Date();
@@ -6,6 +6,11 @@ export function getYesterdayFormat() {
     yesterdayDate.setDate(todayDate.getDate() - 1);
     const yesterdayFormat = yesterdayDate.toISOString().substring(0, 10); 
     return yesterdayFormat;
+}
+
+export function compareDates(dateStr1, dateStr2) {
+    console.log(new Date(dateStr1));
+    return new Date(dateStr2) - new Date(dateStr1);
 }
 
 //Validations
@@ -32,8 +37,8 @@ export function validateTicker(ticker) {
 //Calculations
 export function recalculateAvgPrice(tickerRecalculate) {
     let totalPrice=0,totalPapers=0;
-    tradeHistoryList.forEach(tradeHistoryObject => {
-        const { type,ticker,price,papers } = tradeHistoryObject;
+    transactionHistoryList.forEach(transactionHistoryObject => {
+        const { type,ticker,price,papers } = transactionHistoryObject;
         if (ticker===tickerRecalculate && type==='bought') {
             totalPrice+=(price*papers);
             totalPapers+=papers;
