@@ -9,7 +9,6 @@ export function getYesterdayFormat() {
 }
 
 export function compareDates(dateStr1, dateStr2) {
-    console.log(new Date(dateStr1));
     return new Date(dateStr2) - new Date(dateStr1);
 }
 
