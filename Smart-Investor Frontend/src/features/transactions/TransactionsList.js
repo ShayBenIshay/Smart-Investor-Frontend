@@ -1,24 +1,39 @@
-import { useSelector } from "react-redux";
-import { selectTransactionIds } from "./transactionsSlice";
-import SingleTransaction from "./SingleTransaction";
-import { useGetTransactionsQuery } from "./transactionsSlice";
+import Transaction from "./Transaction";
+import { useGetTransactionsQuery } from "./transactionsApiSlice";
 
 const TransactionsList = () => {
-  const { isLoading, isSuccess, isError, error } = useGetTransactionsQuery();
-
-  const orderedTransactionIds = useSelector(selectTransactionIds);
+  const {
+    data: transactions,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetTransactionsQuery("transactionsList", {
+    pollingInterval: 15000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+  });
 
   let content;
-  if (isLoading) {
-    content = <p>"Loading..."</p>;
-  } else if (isSuccess) {
-    content = orderedTransactionIds.map((transactionId) => (
-      <SingleTransaction key={transactionId} transactionId={transactionId} />
-    ));
-  } else if (isError) {
-    content = <p>{error}</p>;
+
+  if (isLoading) content = <p>Loading...</p>;
+
+  if (isError) {
+    content = <p className="errmsg">{error?.data?.message}</p>;
   }
 
-  return <section>{content}</section>;
+  if (isSuccess) {
+    const { ids } = transactions;
+
+    const tableContent = ids?.length
+      ? ids.map((transactionId) => (
+          <Transaction key={transactionId} transactionId={transactionId} />
+        ))
+      : null;
+
+    content = <section>{tableContent}</section>;
+  }
+
+  return content;
 };
 export default TransactionsList;

@@ -11,10 +11,13 @@ const transactionsAdapter = createEntityAdapter({
 
 const initialState = transactionsAdapter.getInitialState();
 
-export const extendedApiSlice = apiSlice.injectEndpoints({
+export const transactionsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getTransactions: builder.query({
       query: () => "/transactions",
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
       transformResponse: (responseData) => {
         const loadedTransactions = responseData.map((transaction) => {
           transaction.id = transaction._id;
@@ -22,10 +25,14 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
         });
         return transactionsAdapter.setAll(initialState, loadedTransactions);
       },
-      providesTags: (result, error, arg) => [
-        { type: "Transaction", id: "LIST" },
-        ...result.ids.map((id) => ({ type: "Transaction", id })),
-      ],
+      providesTags: (result, error, arg) => {
+        if (result?.ids) {
+          return [
+            { type: "Transaction", id: "LIST" },
+            ...result.ids.map((id) => ({ type: "Transaction", id })),
+          ];
+        } else return [{ type: "Transaction", id: "LIST" }];
+      },
     }),
     addNewTransaction: builder.mutation({
       query: (initialTransaction) => ({
@@ -67,10 +74,10 @@ export const {
   useAddNewTransactionMutation,
   useUpdateTransactionMutation,
   useDeleteTransactionMutation,
-} = extendedApiSlice;
+} = transactionsApiSlice;
 
 export const selectTransactionsResult =
-  extendedApiSlice.endpoints.getTransactions.select();
+  transactionsApiSlice.endpoints.getTransactions.select();
 
 const selectTransactionsData = createSelector(
   selectTransactionsResult,

@@ -4,10 +4,10 @@ import "./index.css";
 import App from "./App";
 import { store } from "./app/store";
 import { Provider } from "react-redux";
-import { extendedApiSlice } from "./features/transactions/transactionsSlice";
+import { transactionsApiSlice } from "./features/transactions/transactionsApiSlice";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-store.dispatch(extendedApiSlice.endpoints.getTransactions.initiate());
+store.dispatch(transactionsApiSlice.endpoints.getTransactions.initiate());
 
 ReactDOM.render(
   <React.StrictMode>

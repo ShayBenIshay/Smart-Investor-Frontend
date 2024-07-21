@@ -1,23 +1,23 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import {
-  selectTransactionById,
   useUpdateTransactionMutation,
   useDeleteTransactionMutation,
-} from "./transactionsSlice";
+} from "./transactionsApiSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
-const EditTransactionForm = () => {
-  const { transactionId } = useParams();
+const EditTransactionForm = ({ transaction }) => {
+  const [updateTransaction, { isLoading, isSuccess, isError, error }] =
+    useUpdateTransactionMutation();
+
+  const [
+    deleteTransaction,
+    { isSuccess: isDelSuccess, isError: isDelError, error: delerror },
+  ] = useDeleteTransactionMutation();
+
   const navigate = useNavigate();
-
-  const [updateTransaction, { isLoading }] = useUpdateTransactionMutation();
-  const [deleteTransaction] = useDeleteTransactionMutation();
-
-  const transaction = useSelector((state) =>
-    selectTransactionById(state, transactionId)
-  );
 
   const [ticker, setTicker] = useState(transaction?.stock?.ticker);
   const [price, setPrice] = useState(transaction?.stock?.price);
@@ -25,13 +25,16 @@ const EditTransactionForm = () => {
   const [papers, setPapers] = useState(transaction?.papers);
   const [operation, setOperation] = useState(transaction?.operation);
 
-  if (!transaction) {
-    return (
-      <section>
-        <h2>Transaction not found!</h2>
-      </section>
-    );
-  }
+  useEffect(() => {
+    if (isSuccess || isDelSuccess) {
+      setTicker("");
+      setPrice(0);
+      setDate(format(new Date(), "dd/MM/yyyy"));
+      setPapers(0);
+      setOperation("");
+      navigate(`/dash/transactions`);
+    }
+  }, [isSuccess, isDelSuccess, navigate]);
 
   const onTickerChanged = (e) => setTicker(e.target.value);
   const onPriceChanged = (e) => setPrice(Number(e.target.value));
@@ -44,60 +47,72 @@ const EditTransactionForm = () => {
 
   const onSaveTransactionClicked = async () => {
     if (canSave) {
-      const stock = {
-        ticker,
-        price,
-        date,
-      };
-      try {
-        await updateTransaction({
-          stock,
-          id: transactionId,
-          papers,
-          operation,
-        }).unwrap();
-
-        setTicker("");
-        setPrice(0);
-        setDate(format(new Date(), "dd/MM/yyyy"));
-        setPapers(0);
-        setOperation("");
-        navigate(`/transaction/${transactionId}`);
-      } catch (err) {
-        console.error("Failed to save the transaction", err);
-      }
+      await updateTransaction({
+        stock: {
+          ticker,
+          price,
+          date,
+        },
+        id: transaction.id,
+        papers,
+        operation,
+      });
     }
   };
 
   const onDeleteTransactionClicked = async () => {
-    try {
-      await deleteTransaction({ id: transaction._id }).unwrap();
-
-      setTicker("");
-      setPrice(0);
-      setDate(format(new Date(), "dd/MM/yyyy"));
-      setPapers(0);
-      setOperation("");
-      navigate("/");
-    } catch (err) {
-      console.error("Failed to delete the transaction", err);
-    }
+    await deleteTransaction({ id: transaction.id });
   };
 
-  return (
-    <section>
-      <h2>Edit Transaction</h2>
-      <form>
-        <label htmlFor="transactionTicker">Transaction Ticker:</label>
+  const errClass = isError || isDelError ? "errmsg" : "offscreen";
+  const validTickerClass = !ticker ? "form__input--incomplete" : "";
+  const validPriceClass = !price ? "form__input--incomplete" : "";
+  const validDateClass = !date ? "form__input--incomplete" : "";
+  const validPapersClass = !papers ? "form__input--incomplete" : "";
+  const validOperationClass = !operation ? "form__input--incomplete" : "";
+
+  const errContent = (error?.data?.message || delerror?.data?.message) ?? "";
+
+  const content = (
+    <>
+      <p className={errClass}>{errContent}</p>
+
+      <form className="form" onSubmit={(e) => e.preventDefault()}>
+        <div className="form__title-row">
+          <h2>Edit Transaction</h2>
+          <div className="form__action-buttons">
+            <button
+              type="button"
+              onClick={onSaveTransactionClicked}
+              disabled={!canSave}
+            >
+              <FontAwesomeIcon icon={faSave} />
+            </button>
+            <button
+              className="deleteButton"
+              type="button"
+              onClick={onDeleteTransactionClicked}
+            >
+              <FontAwesomeIcon icon={faTrashCan} />
+            </button>
+          </div>
+        </div>
+        <label className="form__label" htmlFor="transactionTicker">
+          Transaction Ticker:
+        </label>
         <input
+          className={`form__input ${validTickerClass}`}
           type="text"
           id="transactionTicker"
           name="transactionTicker"
           value={ticker}
           onChange={onTickerChanged}
         />
-        <label htmlFor="transactionPrice">Transaction Price:</label>
+        <label className="form__label" htmlFor="transactionPrice">
+          Transaction Price:
+        </label>
         <input
+          className={`form__input ${validPriceClass}`}
           type="number"
           id="transactionPrice"
           name="transactionPrice"
@@ -106,6 +121,7 @@ const EditTransactionForm = () => {
         />
         <label htmlFor="transactionDate">Transaction Date:</label>
         <input
+          className={`form__input ${validDateClass}`}
           type="text"
           id="transactionDate"
           name="transactionDate"
@@ -115,6 +131,7 @@ const EditTransactionForm = () => {
         />
         <label htmlFor="transactionPapers">Transaction Papers:</label>
         <input
+          className={`form__input ${validPapersClass}`}
           type="number"
           id="transactionPapers"
           name="transactionPapers"
@@ -123,6 +140,7 @@ const EditTransactionForm = () => {
         />
         <label htmlFor="transactionOperation">Operation(Buy/Sell):</label>
         <select
+          className={`form__select ${validOperationClass}`}
           id="transactionOperation"
           value={operation}
           onChange={onOperationChanged}
@@ -135,23 +153,11 @@ const EditTransactionForm = () => {
             Sell
           </option>
         </select>
-        <button
-          type="button"
-          onClick={onSaveTransactionClicked}
-          disabled={!canSave}
-        >
-          Save Transaction
-        </button>
-        <button
-          className="deleteButton"
-          type="button"
-          onClick={onDeleteTransactionClicked}
-        >
-          Delete Transaction
-        </button>
       </form>
-    </section>
+    </>
   );
+
+  return content;
 };
 
 export default EditTransactionForm;
