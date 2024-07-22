@@ -2,21 +2,19 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import { store } from "./app/store";
 import { Provider } from "react-redux";
-import { transactionsApiSlice } from "./features/transactions/transactionsApiSlice";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
-store.dispatch(transactionsApiSlice.endpoints.getTransactions.initiate());
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Router>
+      <BrowserRouter>
         <Routes>
           <Route path="/*" element={<App />} />
         </Routes>
-      </Router>
+      </BrowserRouter>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")

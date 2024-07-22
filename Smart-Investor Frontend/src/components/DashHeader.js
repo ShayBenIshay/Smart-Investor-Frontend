@@ -39,7 +39,7 @@ const DashHeader = () => {
     </button>
   );
 
-  return (
+  const content = (
     <header className="header">
       <div className={`dash-header__container ${dashClass}`}>
         <h1>Smart Investor</h1>
@@ -63,6 +63,8 @@ const DashHeader = () => {
       </div>
     </header>
   );
+
+  return content;
 };
 
 export default DashHeader;

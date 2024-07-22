@@ -1,5 +1,5 @@
 import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
-import { apiSlice } from "../api/apiSlice";
+import { apiSlice } from "../../app/api/apiSlice";
 
 const transactionsAdapter = createEntityAdapter({
   sortComparer: function (a, b) {
@@ -34,7 +34,7 @@ export const transactionsApiSlice = apiSlice.injectEndpoints({
         } else return [{ type: "Transaction", id: "LIST" }];
       },
     }),
-    addNewTransaction: builder.mutation({
+    addTransaction: builder.mutation({
       query: (initialTransaction) => ({
         url: "/transactions",
         method: "POST",
@@ -71,7 +71,7 @@ export const transactionsApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetTransactionsQuery,
-  useAddNewTransactionMutation,
+  useAddTransactionMutation,
   useUpdateTransactionMutation,
   useDeleteTransactionMutation,
 } = transactionsApiSlice;

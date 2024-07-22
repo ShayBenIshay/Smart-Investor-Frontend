@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import { useAddNewTransactionMutation } from "./transactionsApiSlice";
+import { useAddTransactionMutation } from "./transactionsApiSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 
 const AddTransactionForm = () => {
-  const [addNewTransaction, { isLoading, isSuccess, isError, error }] =
-    useAddNewTransactionMutation();
+  const [addTransaction, { isLoading, isSuccess, isError, error }] =
+    useAddTransactionMutation();
 
   const navigate = useNavigate();
 
@@ -40,7 +40,7 @@ const AddTransactionForm = () => {
   const onSaveTransactionClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
-      await addNewTransaction({
+      await addTransaction({
         stock: {
           ticker,
           price,
