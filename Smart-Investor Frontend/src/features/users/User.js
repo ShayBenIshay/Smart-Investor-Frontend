@@ -12,10 +12,12 @@ const User = ({ userId }) => {
 
   if (user) {
     const handleEdit = () => navigate(`/dash/users/${userId}`);
+    const userRolesString = user.roles.toString().replaceAll(",", ", ");
 
     return (
       <tr className="table__row user">
         <td className={"table__cell"}>{user.username}</td>
+        <td className={"table__cell"}>{userRolesString}</td>
         <td className={"table__cell"}>
           <button className="icon-button table__button" onClick={handleEdit}>
             <FontAwesomeIcon icon={faPenToSquare} />

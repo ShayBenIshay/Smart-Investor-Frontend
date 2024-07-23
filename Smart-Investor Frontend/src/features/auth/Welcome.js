@@ -1,4 +1,7 @@
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectCurrentToken } from "./authSlice";
+import { jwtDecode } from "jwt-decode";
 
 const Welcome = () => {
   const date = new Date();
@@ -7,18 +10,23 @@ const Welcome = () => {
     timeStyle: "long",
   }).format(date);
 
+  const token = useSelector(selectCurrentToken);
+  const decoded = jwtDecode(token);
+  const { username } = decoded.UserInfo;
+
   const content = (
     <section className="welcome">
       <p>{today}</p>
 
-      <h1>Welcome!</h1>
+      <h1>{`Welcome ${username}!`}</h1>
+      <h3>How can Smart Investor help you today?</h3>
 
       <p>
-        <Link to="/dash/transactions">View Transactions</Link>
+        <Link to="/dash/transactions">View My Transactions</Link>
       </p>
 
       <p>
-        <Link to="/dash/transactions/new">Add New Transaction</Link>
+        <Link to="/dash/transactions/new">Add Transaction</Link>
       </p>
 
       <p>
@@ -26,7 +34,7 @@ const Welcome = () => {
       </p>
 
       <p>
-        <Link to="/dash/users/new">Add New User</Link>
+        <Link to="/dash/users/new">Add User</Link>
       </p>
     </section>
   );
