@@ -1,14 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-
-import { useSelector } from "react-redux";
-import { selectTransactionById } from "./transactionsApiSlice";
+import { useGetTransactionsQuery } from "./transactionsApiSlice";
+import { memo } from "react";
 
 const Transaction = ({ transactionId }) => {
-  const transaction = useSelector((state) =>
-    selectTransactionById(state, transactionId)
-  );
+  const { transaction } = useGetTransactionsQuery("transactionsList", {
+    selectFromResult: ({ data }) => ({
+      transaction: data?.entities[transactionId],
+    }),
+  });
 
   const navigate = useNavigate();
 
@@ -30,4 +31,6 @@ const Transaction = ({ transactionId }) => {
   } else return null;
 };
 
-export default Transaction;
+const memoizedTransaction = memo(Transaction);
+
+export default memoizedTransaction;

@@ -1,7 +1,14 @@
 import Transaction from "./Transaction";
 import { useGetTransactionsQuery } from "./transactionsApiSlice";
+import useAuth from "../../hooks/useAuth";
+import PulseLoader from "react-spinners/PulseLoader";
+import useTitle from "../../hooks/useTitle";
 
 const TransactionsList = () => {
+  useTitle("SmartInvestor: Transactions List");
+
+  const { username, isAdmin } = useAuth();
+
   const {
     data: transactions,
     isLoading,
@@ -16,20 +23,29 @@ const TransactionsList = () => {
 
   let content;
 
-  if (isLoading) content = <p>Loading...</p>;
+  if (isLoading) content = <PulseLoader color={"#FFF"} />;
 
   if (isError) {
     content = <p className="errmsg">{error?.data?.message}</p>;
   }
 
   if (isSuccess) {
-    const { ids } = transactions;
+    const { ids, entities } = transactions;
 
-    const tableContent = ids?.length
-      ? ids.map((transactionId) => (
-          <Transaction key={transactionId} transactionId={transactionId} />
-        ))
-      : null;
+    let filteredIds;
+    if (isAdmin) {
+      filteredIds = [...ids];
+    } else {
+      filteredIds = ids.filter(
+        (transactionId) => entities[transactionId].username === username
+      );
+    }
+
+    const tableContent =
+      ids?.length &&
+      filteredIds.map((transactionId) => (
+        <Transaction key={transactionId} transactionId={transactionId} />
+      ));
 
     content = <section>{tableContent}</section>;
   }

@@ -12,36 +12,48 @@ import UsersList from "./features/users/UsersList";
 import EditUser from "./features/users/EditUser";
 import AddUserForm from "./features/users/AddUserForm";
 import PersistLogin from "./features/auth/PersistLogin";
+import { ROLES } from "./config/roles";
+import RequireAuth from "./features/auth/RequireAuth";
+import useTitle from "./hooks/useTitle";
 
 function App() {
+  useTitle("Smart Investor");
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
+        {/* public routes */}
         <Route index element={<Public />} />
         <Route path="login" element={<Login />} />
-
+        {/* Protected Routes */}
         <Route element={<PersistLogin />}>
-          <Route element={<Prefetch />}>
-            <Route path="dash" element={<DashLayout />}>
-              <Route index element={<Welcome />} />
+          <Route
+            element={<RequireAuth allowedRoles={[...Object.values(ROLES)]} />}
+          >
+            <Route element={<Prefetch />}>
+              <Route path="dash" element={<DashLayout />}>
+                <Route index element={<Welcome />} />
 
-              <Route path="users">
-                <Route index element={<UsersList />} />
-                <Route path=":id" element={<EditUser />} />
-                <Route path="new" element={<AddUserForm />} />
+                <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
+                  <Route path="users">
+                    <Route index element={<UsersList />} />
+                    <Route path=":id" element={<EditUser />} />
+                    <Route path="new" element={<AddUserForm />} />
+                  </Route>
+                </Route>
+
+                <Route path="transactions">
+                  <Route index element={<TransactionsList />} />
+                  <Route path="new" index element={<AddTransaction />} />
+                  <Route path=":id" element={<EditTransaction />} />
+                </Route>
+
+                {/* Catch all - replace with 404 component if you want */}
+                {/* <Route path="*" element={<Navigate to="/" replace />} /> */}
               </Route>
-
-              <Route path="transactions">
-                <Route index element={<TransactionsList />} />
-                <Route path="new" index element={<AddTransaction />} />
-                <Route path=":id" element={<EditTransaction />} />
-              </Route>
-
-              {/* Catch all - replace with 404 component if you want */}
-              {/* <Route path="*" element={<Navigate to="/" replace />} /> */}
             </Route>
           </Route>
         </Route>
+        {/* End Protected Routes */}
       </Route>
     </Routes>
   );

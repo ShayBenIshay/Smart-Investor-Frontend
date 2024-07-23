@@ -14,10 +14,12 @@ const initialState = transactionsAdapter.getInitialState();
 export const transactionsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getTransactions: builder.query({
-      query: () => "/transactions",
-      validateStatus: (response, result) => {
-        return response.status === 200 && !result.isError;
-      },
+      query: () => ({
+        url: "/transactions",
+        validateStatus: (response, result) => {
+          return response.status === 200 && !result.isError;
+        },
+      }),
       transformResponse: (responseData) => {
         const loadedTransactions = responseData.map((transaction) => {
           transaction.id = transaction._id;
