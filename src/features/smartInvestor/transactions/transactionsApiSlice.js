@@ -1,5 +1,5 @@
 import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
-import { apiSlice } from "../../app/api/apiSlice";
+import { smartInvestorApiSlice } from "../../../app/api/smartInvestorApiSlice";
 
 const transactionsAdapter = createEntityAdapter({
   sortComparer: function (a, b) {
@@ -11,7 +11,7 @@ const transactionsAdapter = createEntityAdapter({
 
 const initialState = transactionsAdapter.getInitialState();
 
-export const transactionsApiSlice = apiSlice.injectEndpoints({
+export const transactionsApiSlice = smartInvestorApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getTransactions: builder.query({
       query: () => ({

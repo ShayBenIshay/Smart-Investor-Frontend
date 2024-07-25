@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
-import { apiSlice } from "./api/apiSlice";
-import authReducer from "../features/auth/authSlice";
+import { smartInvestorApiSlice } from "./api/smartInvestorApiSlice";
+import authReducer from "../features/smartInvestor/auth/authSlice";
 
 let devTools;
 if (process.env.NODE_ENV === "development") {
@@ -12,11 +12,11 @@ if (process.env.NODE_ENV === "development") {
 
 export const store = configureStore({
   reducer: {
-    [apiSlice.reducerPath]: apiSlice.reducer,
+    [smartInvestorApiSlice.reducerPath]: smartInvestorApiSlice.reducer,
     auth: authReducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(apiSlice.middleware),
+    getDefaultMiddleware().concat(smartInvestorApiSlice.middleware),
   devTools,
 });
 

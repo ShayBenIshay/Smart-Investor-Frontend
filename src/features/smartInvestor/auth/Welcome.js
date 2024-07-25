@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
-import useTitle from "../../hooks/useTitle";
+import useAuth from "../../../hooks/useAuth";
+import useTitle from "../../../hooks/useTitle";
 
 const Welcome = () => {
   const date = new Date();

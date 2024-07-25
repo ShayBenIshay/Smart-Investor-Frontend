@@ -1,7 +1,7 @@
-import { apiSlice } from "../../app/api/apiSlice";
+import { smartInvestorApiSlice } from "../../../app/api/smartInvestorApiSlice";
 import { logOut, setCredentials } from "./authSlice";
 
-export const authApiSlice = apiSlice.injectEndpoints({
+export const authApiSlice = smartInvestorApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({
@@ -27,7 +27,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
           await queryFulfilled;
           dispatch(logOut());
           setTimeout(() => {
-            dispatch(apiSlice.util.resetApiState());
+            dispatch(smartInvestorApiSlice.util.resetApiState());
           }, 1000);
         } catch (err) {
           console.log(err);

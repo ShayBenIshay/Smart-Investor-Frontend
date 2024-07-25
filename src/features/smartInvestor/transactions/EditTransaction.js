@@ -2,9 +2,9 @@ import { useParams } from "react-router-dom";
 import EditTransactionForm from "./EditTransactionForm";
 import { useGetTransactionsQuery } from "./transactionsApiSlice";
 import { useGetUsersQuery } from "../users/usersApiSlice";
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
 import PulseLoader from "react-spinners/PulseLoader";
-import useTitle from "../../hooks/useTitle";
+import useTitle from "../../../hooks/useTitle";
 
 const EditTransaction = () => {
   useTitle("SmartInvestor: Edit Transaction");

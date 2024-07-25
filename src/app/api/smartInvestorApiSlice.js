@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { setCredentials } from "../../features/auth/authSlice";
+import { setCredentials } from "../../features/smartInvestor/auth/authSlice";
 
 let baseUrl;
 if (process.env.NODE_ENV === "development") {
@@ -47,7 +47,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
   return result;
 };
 
-export const apiSlice = createApi({
+export const smartInvestorApiSlice = createApi({
   baseQuery: baseQueryWithReauth,
   tagTypes: ["Transaction", "User"],
   endpoints: (builder) => ({}),
