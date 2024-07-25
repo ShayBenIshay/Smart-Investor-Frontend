@@ -15,6 +15,7 @@ import PersistLogin from "./features/auth/PersistLogin";
 import { ROLES } from "./config/roles";
 import RequireAuth from "./features/auth/RequireAuth";
 import useTitle from "./hooks/useTitle";
+import Register from "./features/auth/Register";
 
 function App() {
   useTitle("Smart Investor");
@@ -24,6 +25,7 @@ function App() {
         {/* public routes */}
         <Route index element={<Public />} />
         <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
         {/* Protected Routes */}
         <Route element={<PersistLogin />}>
           <Route

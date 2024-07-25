@@ -1,8 +1,16 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setCredentials } from "../../features/auth/authSlice";
 
+let baseUrl;
+if (process.env.NODE_ENV === "development") {
+  baseUrl = "http://localhost:3500";
+} else {
+  //production
+  baseUrl = "https://smart-investor-api.onrender.com";
+}
+
 const baseQuery = fetchBaseQuery({
-  baseUrl: "https://smart-investor-api.onrender.com",
+  baseUrl,
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = getState().auth.token;

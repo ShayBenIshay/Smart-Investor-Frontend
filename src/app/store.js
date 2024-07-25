@@ -3,6 +3,13 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import { apiSlice } from "./api/apiSlice";
 import authReducer from "../features/auth/authSlice";
 
+let devTools;
+if (process.env.NODE_ENV === "development") {
+  devTools = false;
+} else {
+  devTools = true;
+}
+
 export const store = configureStore({
   reducer: {
     [apiSlice.reducerPath]: apiSlice.reducer,
@@ -10,7 +17,7 @@ export const store = configureStore({
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),
-  devTools: false,
+  devTools,
 });
 
 setupListeners(store.dispatch);
