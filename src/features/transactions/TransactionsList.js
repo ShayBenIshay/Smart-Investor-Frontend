@@ -3,6 +3,7 @@ import { useGetTransactionsQuery } from "./transactionsApiSlice";
 import useAuth from "../../hooks/useAuth";
 import PulseLoader from "react-spinners/PulseLoader";
 import useTitle from "../../hooks/useTitle";
+import { Link } from "react-router-dom";
 
 const TransactionsList = () => {
   useTitle("SmartInvestor: Transactions List");
@@ -40,12 +41,17 @@ const TransactionsList = () => {
         (transactionId) => entities[transactionId].username === username
       );
     }
-
-    const tableContent =
-      ids?.length &&
-      filteredIds.map((transactionId) => (
-        <Transaction key={transactionId} transactionId={transactionId} />
-      ));
+    const noTransactions = (
+      <>
+        <p>No Transactions have been made yet.</p>
+        <Link to="/dash/transactions/new">Add Transaction</Link>
+      </>
+    );
+    const tableContent = filteredIds?.length
+      ? filteredIds.map((transactionId) => (
+          <Transaction key={transactionId} transactionId={transactionId} />
+        ))
+      : noTransactions;
 
     content = <section>{tableContent}</section>;
   }
