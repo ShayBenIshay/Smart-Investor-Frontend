@@ -39,6 +39,12 @@ const Welcome = () => {
           <Link to="/dash/users/new">Add User</Link>
         </p>
       )}
+
+      {isAdmin && (
+        <p>
+          <Link to="/dash/previousCloses">View Previous Closes List</Link>
+        </p>
+      )}
     </section>
   );
 

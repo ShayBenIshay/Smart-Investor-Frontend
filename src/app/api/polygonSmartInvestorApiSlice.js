@@ -47,9 +47,9 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
   return result;
 };
 
-export const smartInvestorApiSlice = createApi({
-  reducerPath: "smartInvestor",
+export const polygonSmartInvestorApiSlice = createApi({
+  reducerPath: "previousClose",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["Transaction", "User"],
+  tagTypes: ["PreviousClose"],
   endpoints: (builder) => ({}),
 });

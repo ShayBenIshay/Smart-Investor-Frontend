@@ -40,6 +40,7 @@ const Login = () => {
       navigate("/dash");
     } catch (err) {
       if (!err.status) {
+        console.log(err);
         setErrMsg("No Server Response");
       } else if (err.status === 400) {
         setErrMsg("Missing Username or Password");
