@@ -16,13 +16,19 @@ const Welcome = () => {
   const content = (
     <section className="welcome">
       <p>{today}</p>
-      <p>{`${status}`}</p>
+      <p>{isAdmin && `${status}`}</p>
       <h1>{`Welcome ${username}!`}</h1>
       <h3>How can Smart Investor help you today?</h3>
 
       <p>
-        <Link to="/dash/transactions">View My Transactions</Link>
+        <Link to="/dash/transactions">My Transactions</Link>
       </p>
+
+      {isAdmin && (
+        <p>
+          <Link to="/dash/transactions/all">All Transactions</Link>
+        </p>
+      )}
 
       <p>
         <Link to="/dash/transactions/new">Add Transaction</Link>
@@ -30,7 +36,7 @@ const Welcome = () => {
 
       {isAdmin && (
         <p>
-          <Link to="/dash/users">View User Settings</Link>
+          <Link to="/dash/users">Users List</Link>
         </p>
       )}
 
@@ -42,7 +48,7 @@ const Welcome = () => {
 
       {isAdmin && (
         <p>
-          <Link to="/dash/previousCloses">View Previous Closes List</Link>
+          <Link to="/dash/previousCloses">Previous Closes List</Link>
         </p>
       )}
     </section>

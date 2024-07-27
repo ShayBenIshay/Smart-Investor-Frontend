@@ -5,10 +5,10 @@ import PulseLoader from "react-spinners/PulseLoader";
 import useTitle from "../../../hooks/useTitle";
 import { Link } from "react-router-dom";
 
-const TransactionsList = () => {
-  useTitle("SmartInvestor: Transactions List");
+const AllTransactionsList = () => {
+  useTitle("SmartInvestor: All Transactions List");
 
-  const { username } = useAuth();
+  const { isAdmin } = useAuth();
 
   const {
     data: transactions,
@@ -33,18 +33,18 @@ const TransactionsList = () => {
   if (isSuccess) {
     const { ids, entities } = transactions;
 
-    const filteredIds = ids.filter(
-      (transactionId) => entities[transactionId].username === username
-    );
     const noTransactions = (
       <>
         <p>No Transactions have been made yet.</p>
         <Link to="/dash/transactions/new">Add Transaction</Link>
       </>
     );
-    const tableContent = filteredIds?.length
-      ? filteredIds.map((transactionId) => (
-          <Transaction key={transactionId} transactionId={transactionId} />
+    const tableContent = ids?.length
+      ? ids.map((transactionId) => (
+          <>
+            <p>{entities[transactionId].username}</p>
+            <Transaction key={transactionId} transactionId={transactionId} />
+          </>
         ))
       : noTransactions;
 
@@ -53,4 +53,4 @@ const TransactionsList = () => {
 
   return content;
 };
-export default TransactionsList;
+export default AllTransactionsList;

@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useAddTransactionMutation } from "./transactionsApiSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
+// import { useGetDailyCloseQuery } from "../../../app/api/polygonApiSlice";
+// import { polygonApiSlice } from "../../../app/api/polygonApiSlice";
 
 const AddTransactionForm = () => {
   const [addTransaction, { isLoading, isSuccess, isError, error }] =
@@ -27,6 +29,19 @@ const AddTransactionForm = () => {
       navigate("/dash/transactions");
     }
   }, [isSuccess, navigate]);
+
+  // useEffect(() => {
+  //   async function fetchData(ticker, date) {
+  //     return await polygonApiSlice.endpoints.getDailyClose(ticker, date);
+  //   }
+  //   //validate ticker
+  //   if (ticker && date) {
+  //     const result = fetchData(ticker, date);
+  //     console.log(result);
+  //     console.log(result.data);
+  //     setPrice(result.data.close);
+  //   }
+  // }, [ticker, date]);
 
   const onTickerChanged = (e) => setTicker(e.target.value);
   const onPriceChanged = (e) => setPrice(e.target.value);
@@ -77,7 +92,7 @@ const AddTransactionForm = () => {
           </div>
         </div>
         <label className="form__label" htmlFor="transactionTicker">
-          Transaction Ticker:
+          Stock Ticker:
         </label>
         <input
           className={`form__input ${validTickerClass}`}
@@ -86,17 +101,6 @@ const AddTransactionForm = () => {
           name="transactionTicker"
           value={ticker}
           onChange={onTickerChanged}
-        />
-        <label className="form__label" htmlFor="transactionPrice">
-          Transaction Price:
-        </label>
-        <input
-          className={`form__input ${validPriceClass}`}
-          type="number"
-          id="transactionPrice"
-          name="transactionPrice"
-          value={price}
-          onChange={onPriceChanged}
         />
         <label className="form__label" htmlFor="transactionDate">
           Transaction Date:
@@ -110,8 +114,19 @@ const AddTransactionForm = () => {
           placeholder="dd/mm/yyyy"
           onChange={onDateChanged}
         />
+        <label className="form__label" htmlFor="transactionPrice">
+          Stock Price:
+        </label>
+        <input
+          className={`form__input ${validPriceClass}`}
+          type="number"
+          id="transactionPrice"
+          name="transactionPrice"
+          value={price}
+          onChange={onPriceChanged}
+        />
         <label className="form__label" htmlFor="transactionPapers">
-          Transaction Papers:
+          Papers:
         </label>
         <input
           className={`form__input ${validPapersClass}`}

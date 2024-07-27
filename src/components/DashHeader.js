@@ -122,7 +122,7 @@ const DashHeader = () => {
 
       <header className="header">
         <div className={`dash-header__container ${dashClass}`}>
-          <Link to="/dash">
+          <Link to="/dash" style={{ color: "whitesmoke" }}>
             <h1>Smart Investor</h1>
           </Link>
           <nav className="dash-header__nav">

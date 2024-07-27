@@ -15,7 +15,7 @@
   --COLOR: black;
   --ERROR: firebrick;
   --LINK-COLOR: blue;
-  --LINK-HOVER: rgba(245, 245, 245, 0.9);
+  --LINK-HOVER: rgba(0, 0, 0, 0.9);
   --TABLE-BGCOLOR: #fff;
   --TABLE-COLOR: #000;
   --INPUT-INVALID: #f00;
@@ -138,16 +138,16 @@ a:focus-visible {
 }
 
 header {
-  z-index: 1;
-  padding: 0 0.5em;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  background-color: purple;
-  border-bottom: 1px solid var(--BORDER-COLOR);
-  color: whitesmoke;
   position: sticky;
   top: 0;
+  z-index: 1;
+  background-color: purple;
+  padding: 0 0.5em;
+  border-bottom: 1px solid var(--BORDER-COLOR);
+  color: whitesmoke;
+  /* display: flex; */
+  /* justify-content: space-between; */
+  /* align-items: flex-start; */
 }
 
 .dash-header__container {

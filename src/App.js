@@ -16,8 +16,9 @@ import { ROLES } from "./config/roles";
 import RequireAuth from "./features/smartInvestor/auth/RequireAuth";
 import useTitle from "./hooks/useTitle";
 import Register from "./features/smartInvestor/auth/Register";
-import PreviousClose from "./features/polygon/PreviousClose";
-import PreviousClosesList from "./features/polygon/PreviousClosesList";
+import PreviousClose from "./features/smartInvestor/previousClose/PreviousClose";
+import PreviousClosesList from "./features/smartInvestor/previousClose/PreviousClosesList";
+import AllTransactionsList from "./features/smartInvestor/transactions/AllTransactionsList";
 
 function App() {
   useTitle("Smart Investor");
@@ -47,6 +48,7 @@ function App() {
 
                 <Route path="transactions">
                   <Route index element={<TransactionsList />} />
+                  <Route path="all" element={<AllTransactionsList />} />
                   <Route path="new" index element={<AddTransaction />} />
                   <Route path=":id" element={<EditTransaction />} />
                 </Route>
