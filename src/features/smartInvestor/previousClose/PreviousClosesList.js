@@ -36,7 +36,7 @@ const PreviousClosesList = () => {
 
   let content;
   if (isLoading || isTransactionsLoading) {
-    content = <PulseLoader color={"#FFF"} />;
+    content = <PulseLoader color={"#000"} />;
   }
   if (isError || isTransactionsError) {
     content = (

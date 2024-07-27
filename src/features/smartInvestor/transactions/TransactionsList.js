@@ -24,7 +24,7 @@ const TransactionsList = () => {
 
   let content;
 
-  if (isLoading) content = <PulseLoader color={"#FFF"} />;
+  if (isLoading) content = <PulseLoader color={"#000"} />;
 
   if (isError) {
     content = <p className="errmsg">{error?.data?.message}</p>;

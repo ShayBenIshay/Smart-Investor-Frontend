@@ -59,8 +59,6 @@ const Login = () => {
 
   const errClass = errMsg ? "errmsg" : "offscreen";
 
-  if (isLoading) return <PulseLoader color={"#FFF"} />;
-
   const content = (
     <section className="public">
       <header>
@@ -112,6 +110,15 @@ const Login = () => {
       </footer>
     </section>
   );
+
+  if (isLoading)
+    return (
+      <>
+        <p>Quiet!</p>
+        <PulseLoader color={"#000"} />
+        <p>Waking up the Web Service zzzZZZ</p>
+      </>
+    );
 
   return content;
 };

@@ -25,7 +25,7 @@ const EditTransaction = () => {
     }),
   });
 
-  if (!transaction || !users?.length) return <PulseLoader color={"#FFF"} />;
+  if (!transaction || !users?.length) return <PulseLoader color={"#000"} />;
 
   if (!isAdmin) {
     if (transaction.username !== username) {

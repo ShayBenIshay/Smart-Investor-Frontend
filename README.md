@@ -10,4 +10,4 @@ To use this project go to: https://smart-investor.onrender.com/
 2. Login
 3. Add your Transactions
 
-\*\*Since i am using free Web Services of onrender.com the Backend Web Service can be in sleep and take up to 50 seconds to wake up, after that everything works fine.
+\*\*I am using the free instance of onrender.com the Web Service could spin down with inactivity, which can delay requests by 50 seconds, after that everything works fine.

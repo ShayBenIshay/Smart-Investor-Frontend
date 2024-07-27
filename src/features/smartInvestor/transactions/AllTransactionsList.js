@@ -1,14 +1,11 @@
 import Transaction from "./Transaction";
 import { useGetTransactionsQuery } from "./transactionsApiSlice";
-import useAuth from "../../../hooks/useAuth";
 import PulseLoader from "react-spinners/PulseLoader";
 import useTitle from "../../../hooks/useTitle";
 import { Link } from "react-router-dom";
 
 const AllTransactionsList = () => {
   useTitle("SmartInvestor: All Transactions List");
-
-  const { isAdmin } = useAuth();
 
   const {
     data: transactions,
@@ -24,7 +21,7 @@ const AllTransactionsList = () => {
 
   let content;
 
-  if (isLoading) content = <PulseLoader color={"#FFF"} />;
+  if (isLoading) content = <PulseLoader color={"#000"} />;
 
   if (isError) {
     content = <p className="errmsg">{error?.data?.message}</p>;
