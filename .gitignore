@@ -1,4 +1,5 @@
 .env
+tickers
 
 # dependencies
 /node_modules

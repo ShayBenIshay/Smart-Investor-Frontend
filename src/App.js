@@ -16,8 +16,8 @@ import { ROLES } from "./config/roles";
 import RequireAuth from "./features/auth/RequireAuth";
 import useTitle from "./hooks/useTitle";
 import Register from "./features/auth/Register";
-import PreviousClose from "./features/previousClose/PreviousClose";
-import PreviousClosesList from "./features/previousClose/PreviousClosesList";
+import PreviousClose from "./features/polygon/PreviousClose";
+import PreviousClosesList from "./features/polygon/PreviousClosesList";
 import AllTransactionsList from "./features/transactions/AllTransactionsList";
 
 function App() {

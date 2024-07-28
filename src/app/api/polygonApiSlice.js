@@ -24,8 +24,16 @@ export const polygonApiSlice = createApi({
   baseQuery: baseQueryWithRetry,
   endpoints: (builder) => ({
     getDailyClose: builder.query({
-      query: (ticker, date) => ({
+      query: ({ ticker, date }) => ({
         url: `/v1/open-close/${ticker}/${date}?adjusted=true&apiKey=${process.env.REACT_APP_POLYGON_API_KEY}`,
+        validateStatus: (response, result) => {
+          return response.status === 200 && !result.isError;
+        },
+      }),
+    }),
+    getPreviousClose: builder.query({
+      query: ({ ticker }) => ({
+        url: `/v2/aggs/ticker/${ticker}/prev?adjusted=true&apiKey=${process.env.REACT_APP_POLYGON_API_KEY}`,
         validateStatus: (response, result) => {
           return response.status === 200 && !result.isError;
         },
@@ -34,4 +42,13 @@ export const polygonApiSlice = createApi({
   }),
 });
 
-export const { useGetDailyCloseQuery } = polygonApiSlice;
+export const { useGetDailyCloseQuery, useGetPreviousCloseQuery } =
+  polygonApiSlice;
+
+export function transformDate(dateString) {
+  // Split the input date string into parts
+  const parts = dateString.split("/");
+  // Rearrange and format the parts into the desired output format
+  const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+  return formattedDate;
+}

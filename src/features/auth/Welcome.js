@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import useTitle from "../../hooks/useTitle";
+import DailyClose from "../polygon/DailyClose";
 
 const Welcome = () => {
   const date = new Date();

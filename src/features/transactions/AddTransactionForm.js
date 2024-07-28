@@ -4,8 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { useAddTransactionMutation } from "./transactionsApiSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
-// import { useGetDailyCloseQuery } from "../../../app/api/polygonApiSlice";
-// import { polygonApiSlice } from "../../../app/api/polygonApiSlice";
+import {
+  useGetDailyCloseQuery,
+  transformDate,
+} from "../../app/api/polygonApiSlice";
 
 const AddTransactionForm = () => {
   const [addTransaction, { isLoading, isSuccess, isError, error }] =
@@ -30,18 +32,23 @@ const AddTransactionForm = () => {
     }
   }, [isSuccess, navigate]);
 
-  // useEffect(() => {
-  //   async function fetchData(ticker, date) {
-  //     return await polygonApiSlice.endpoints.getDailyClose(ticker, date);
-  //   }
-  //   //validate ticker
-  //   if (ticker && date) {
-  //     const result = fetchData(ticker, date);
-  //     console.log(result);
-  //     console.log(result.data);
-  //     setPrice(result.data.close);
-  //   }
-  // }, [ticker, date]);
+  const transformedDate = transformDate(date);
+
+  // Use the useGetDailyCloseQuery hook conditionally
+  const {
+    data: dailyCloseData,
+    error: dailyCloseError,
+    isFetching,
+  } = useGetDailyCloseQuery(
+    { ticker, date: transformedDate },
+    { skip: !(ticker.length >= 4 && date) }
+  );
+
+  useEffect(() => {
+    if (dailyCloseData) {
+      setPrice(dailyCloseData.close);
+    }
+  }, [dailyCloseData]);
 
   const onTickerChanged = (e) => setTicker(e.target.value);
   const onPriceChanged = (e) => setPrice(e.target.value);
