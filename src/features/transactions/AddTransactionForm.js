@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
-import { format } from "date-fns";
+import { format, isToday } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { useAddTransactionMutation } from "./transactionsApiSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import {
   useGetDailyCloseQuery,
+  useGetPreviousCloseQuery,
   transformDate,
 } from "../../app/api/polygonApiSlice";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const AddTransactionForm = () => {
   const [addTransaction, { isLoading, isSuccess, isError, error }] =
@@ -17,7 +20,7 @@ const AddTransactionForm = () => {
 
   const [ticker, setTicker] = useState("");
   const [price, setPrice] = useState(0);
-  const [date, setDate] = useState(format(new Date(), "dd/MM/yyyy"));
+  const [date, setDate] = useState(new Date());
   const [papers, setPapers] = useState(0);
   const [operation, setOperation] = useState("");
 
@@ -25,34 +28,37 @@ const AddTransactionForm = () => {
     if (isSuccess) {
       setTicker("");
       setPrice(0);
-      setDate(format(new Date(), "dd/MM/yyyy"));
+      setDate(new Date());
       setPapers(0);
       setOperation("");
       navigate("/dash/transactions");
     }
   }, [isSuccess, navigate]);
 
-  const transformedDate = transformDate(date);
+  const transformedDate = transformDate(format(date, "dd/MM/yyyy"));
 
-  // Use the useGetDailyCloseQuery hook conditionally
-  const {
-    data: dailyCloseData,
-    error: dailyCloseError,
-    isFetching,
-  } = useGetDailyCloseQuery(
-    { ticker, date: transformedDate },
-    { skip: !(ticker.length >= 4 && date) }
-  );
+  const { data: dailyCloseData, error: dailyCloseError } =
+    useGetDailyCloseQuery(
+      { ticker, date: transformedDate },
+      { skip: ticker.length < 4 || isToday(date) }
+    );
+  const { data: previousCloseData, error: previousCloseError } =
+    useGetPreviousCloseQuery(
+      { ticker },
+      { skip: ticker.length < 4 || !isToday(date) }
+    );
 
   useEffect(() => {
     if (dailyCloseData) {
       setPrice(dailyCloseData.close);
+    } else if (previousCloseData) {
+      setPrice(previousCloseData.results[0].c);
     }
-  }, [dailyCloseData]);
+  }, [dailyCloseData, previousCloseData]);
 
   const onTickerChanged = (e) => setTicker(e.target.value);
   const onPriceChanged = (e) => setPrice(e.target.value);
-  const onDateChanged = (e) => setDate(e.target.value);
+  const onDateChanged = (date) => setDate(date);
   const onPapersChanged = (e) => setPapers(e.target.value);
   const onOperationChanged = (e) => setOperation(e.target.value);
 
@@ -66,7 +72,7 @@ const AddTransactionForm = () => {
         stock: {
           ticker,
           price,
-          date,
+          date: format(date, "dd/MM/yyyy"),
         },
         papers,
         operation,
@@ -112,14 +118,11 @@ const AddTransactionForm = () => {
         <label className="form__label" htmlFor="transactionDate">
           Transaction Date:
         </label>
-        <input
-          className={`form__input ${validDateClass}`}
-          type="text"
-          id="transactionDate"
-          name="transactionDate"
-          value={date}
-          placeholder="dd/mm/yyyy"
+        <DatePicker
+          selected={date}
           onChange={onDateChanged}
+          dateFormat="dd/MM/yyyy"
+          className={`form__input ${validDateClass}`}
         />
         <label className="form__label" htmlFor="transactionPrice">
           Stock Price:

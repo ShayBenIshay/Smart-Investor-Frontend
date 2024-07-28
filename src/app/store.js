@@ -11,7 +11,9 @@ export const store = configureStore({
     [polygonApiSlice.reducerPath]: polygonApiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(smartInvestorApiSlice.middleware),
+    getDefaultMiddleware()
+      .concat(smartInvestorApiSlice.middleware)
+      .concat(polygonApiSlice.middleware),
   devTools: process.env.NODE_ENV !== "development",
 });
 

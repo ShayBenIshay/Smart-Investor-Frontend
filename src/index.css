@@ -221,7 +221,7 @@ tr {
   display: flex;
   flex-flow: column nowrap;
   gap: 0.75em;
-  max-width: 800px;
+  max-width: 400px;
 }
 
 .form__title-row {
@@ -234,6 +234,7 @@ tr {
 .form__submit-button {
   padding: 0.5em;
   border-radius: 15px;
+  max-width: 250px;
 }
 
 .form__input--text {
