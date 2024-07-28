@@ -1,5 +1,5 @@
 import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
-import { smartInvestorApiSlice } from "../../../app/api/smartInvestorApiSlice";
+import { smartInvestorApiSlice } from "../../app/api/smartInvestorApiSlice";
 
 const transactionsAdapter = createEntityAdapter({
   sortComparer: function (a, b) {

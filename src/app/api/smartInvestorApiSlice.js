@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { setCredentials } from "../../features/smartInvestor/auth/authSlice";
+import { setCredentials } from "../../features/auth/authSlice";
 
 let baseUrl;
 if (process.env.NODE_ENV === "development") {

@@ -1,4 +1,4 @@
-import { smartInvestorApiSlice } from "../../../app/api/smartInvestorApiSlice";
+import { smartInvestorApiSlice } from "../../app/api/smartInvestorApiSlice";
 import { logOut, setCredentials } from "./authSlice";
 
 export const authApiSlice = smartInvestorApiSlice.injectEndpoints({

@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 
-import { useSendLogoutMutation } from "../features/smartInvestor/auth/authApiSlice";
+import { useSendLogoutMutation } from "../features/auth/authApiSlice";
 import useAuth from "../hooks/useAuth";
 
 const DASH_REGEX = /^\/dash(\/)?$/;

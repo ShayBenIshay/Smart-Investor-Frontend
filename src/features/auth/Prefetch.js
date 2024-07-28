@@ -1,4 +1,4 @@
-import { store } from "../../../app/store";
+import { store } from "../../app/store";
 import { usersApiSlice } from "../users/usersApiSlice";
 import { transactionsApiSlice } from "../transactions/transactionsApiSlice";
 import { previousClosesApiSlice } from "../previousClose/previousClosesApiSlice";

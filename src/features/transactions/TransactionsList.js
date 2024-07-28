@@ -1,8 +1,8 @@
 import Transaction from "./Transaction";
 import { useGetTransactionsQuery } from "./transactionsApiSlice";
-import useAuth from "../../../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 import PulseLoader from "react-spinners/PulseLoader";
-import useTitle from "../../../hooks/useTitle";
+import useTitle from "../../hooks/useTitle";
 import { Link } from "react-router-dom";
 
 const TransactionsList = () => {

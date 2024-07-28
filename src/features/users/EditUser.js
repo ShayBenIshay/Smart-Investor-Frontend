@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import EditUserForm from "./EditUserForm";
 import { useGetUsersQuery } from "./usersApiSlice";
 import PulseLoader from "react-spinners/PulseLoader";
-import useTitle from "../../../hooks/useTitle";
+import useTitle from "../../hooks/useTitle";
 
 const EditUser = () => {
   useTitle("SmartInvestor: Edit User");

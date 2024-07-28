@@ -1,8 +1,8 @@
 import PreviousClose from "./PreviousClose";
 import { useGetPreviousClosesQuery } from "./previousClosesApiSlice";
-import useAuth from "../../../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 import PulseLoader from "react-spinners/PulseLoader";
-import useTitle from "../../../hooks/useTitle";
+import useTitle from "../../hooks/useTitle";
 import { Link } from "react-router-dom";
 import { useGetTransactionsQuery } from "../transactions/transactionsApiSlice";
 
