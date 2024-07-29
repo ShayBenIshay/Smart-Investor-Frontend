@@ -4,6 +4,7 @@ import { transactionsApiSlice } from "../transactions/transactionsApiSlice";
 import { previousClosesApiSlice } from "../polygon/previousClosesApiSlice";
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
+import { calculatePortfolio } from "../portfolio/portfolioSlice";
 
 const Prefetch = () => {
   useEffect(() => {
@@ -26,6 +27,7 @@ const Prefetch = () => {
         { force: true }
       )
     );
+    store.dispatch(calculatePortfolio());
   }, []);
 
   return <Outlet />;

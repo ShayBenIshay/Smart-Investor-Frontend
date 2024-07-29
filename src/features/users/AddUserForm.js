@@ -84,11 +84,6 @@ const AddUserForm = () => {
       <form className="form" onSubmit={onSaveUserClicked}>
         <div className="form__ticker-row">
           <h2>New User</h2>
-          <div className="form__action-buttons">
-            <button className="icon-button" title="Save" disabled={!canSave}>
-              <FontAwesomeIcon icon={faSave} />
-            </button>
-          </div>
         </div>
         <label className="form__label" htmlFor="username">
           Username: <span className="nowrap">[3-20 letters]</span>
@@ -116,7 +111,7 @@ const AddUserForm = () => {
         />
 
         <label className="form__label" htmlFor="roles">
-          ASSIGNED ROLES:
+          Assigned Roles:
         </label>
         <select
           id="roles"
@@ -129,6 +124,11 @@ const AddUserForm = () => {
         >
           {options}
         </select>
+        <div className="form__action-buttons">
+          <button className="icon-button" title="Save" disabled={!canSave}>
+            <FontAwesomeIcon icon={faSave} />
+          </button>
+        </div>
       </form>
     </>
   );

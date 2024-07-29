@@ -63,7 +63,10 @@ const AddTransactionForm = () => {
   const onOperationChanged = (e) => setOperation(e.target.value);
 
   const canSave =
-    [ticker, price, date, papers, operation].every(Boolean) && !isLoading;
+    [ticker, price, date, papers, operation].every(Boolean) &&
+    !isLoading &&
+    price > 0 &&
+    papers > 0;
 
   const onSaveTransactionClicked = async (e) => {
     e.preventDefault();
@@ -82,9 +85,10 @@ const AddTransactionForm = () => {
 
   const errClass = isError ? "errmsg" : "offscreen";
   const validTickerClass = !ticker ? "form__input--incomplete" : "";
-  const validPriceClass = !price ? "form__input--incomplete" : "";
+  const validPriceClass = !price || price <= 0 ? "form__input--incomplete" : "";
   const validDateClass = !date ? "form__input--incomplete" : "";
-  const validPapersClass = !papers ? "form__input--incomplete" : "";
+  const validPapersClass =
+    !papers || papers <= 0 ? "form__input--incomplete" : "";
   const validOperationClass = !operation ? "form__input--incomplete" : "";
 
   const content = (
@@ -94,15 +98,6 @@ const AddTransactionForm = () => {
       <form className="form" onSubmit={onSaveTransactionClicked}>
         <div className="form__title-row">
           <h2>Add a New Transaction</h2>
-          <div className="form__action-buttons">
-            <button
-              type="button"
-              onClick={onSaveTransactionClicked}
-              disabled={!canSave}
-            >
-              <FontAwesomeIcon icon={faSave} />
-            </button>
-          </div>
         </div>
         <label className="form__label" htmlFor="transactionTicker">
           Stock Ticker:
@@ -163,6 +158,15 @@ const AddTransactionForm = () => {
             Sell
           </option>
         </select>
+        <div className="form__action-buttons">
+          <button
+            type="button"
+            onClick={onSaveTransactionClicked}
+            disabled={!canSave}
+          >
+            <FontAwesomeIcon icon={faSave} />
+          </button>
+        </div>
       </form>
     </>
   );
