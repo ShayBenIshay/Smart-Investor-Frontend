@@ -17,7 +17,7 @@ const PreviousClose = ({ previousCloseId }) => {
         <p>High: {previousClose.previousClose.high}</p>
         <p>Low: {previousClose.previousClose.low}</p>
         <p>Open: {previousClose.previousClose.open}</p>
-        <p>Volume: {previousClose.previousClose.volume}</p>
+        <p>Volume: {previousClose.previousClose.volume.toLocaleString()}</p>
       </article>
     );
   } else return null;
