@@ -1,0 +1,48 @@
+.portfolio {
+  width: 100%;
+  margin: 20px auto;
+}
+
+table {
+  font-size: 1rem;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 0.5fr 0.5fr 0.7fr 0.7fr 0.7fr 0.7fr;
+  color: var(--TABLE-COLOR);
+  gap: 0.1em;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #ddd;
+}
+
+.profit {
+  color: limegreen;
+}
+.loss {
+  color: lightcoral;
+}
+
+@media screen and (max-width: 450px) {
+  th {
+    font-size: 0.7rem;
+  }
+}
+
+@media screen and (min-width: 768px) {
+}

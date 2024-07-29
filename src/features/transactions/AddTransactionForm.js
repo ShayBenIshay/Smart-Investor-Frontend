@@ -151,7 +151,6 @@ const AddTransactionForm = () => {
         </label>
         <select
           className={`form__select ${validOperationClass}`}
-          // className="form__select"
           id="transactionOperation"
           value={operation}
           onChange={onOperationChanged}

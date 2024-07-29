@@ -1,47 +1,48 @@
-import Transaction from "./Transaction";
-import { useGetTransactionsQuery } from "./transactionsApiSlice";
+import PreviousClose from "./PreviousClose";
+import { useGetPreviousClosesQuery } from "./previousClosesApiSlice";
 import PulseLoader from "react-spinners/PulseLoader";
 import useTitle from "../../hooks/useTitle";
 import { Link } from "react-router-dom";
 
-const AllTransactionsList = () => {
-  useTitle("SmartInvestor: All Transactions List");
+const AllPreviousClosesList = () => {
+  useTitle("SmartInvestor: PreviousCloses List");
 
   const {
-    data: transactions,
+    data: { ids },
     isLoading,
     isSuccess,
     isError,
     error,
-  } = useGetTransactionsQuery("transactionsList", {
+  } = useGetPreviousClosesQuery("previousClosesList", {
     pollingInterval: 15000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
 
   let content;
-
-  if (isLoading) content = <PulseLoader color={"#000"} />;
-
+  if (isLoading) {
+    content = <PulseLoader color={"#000"} />;
+  }
   if (isError) {
-    content = <p className="errmsg">{error?.data?.message}</p>;
+    content = (
+      <>{isError && <p className="errmsg">{error?.data?.message}</p>}</>
+    );
   }
 
   if (isSuccess) {
-    const { ids, entities } = transactions;
-
     const noTransactions = (
       <>
         <p>No Transactions have been made yet.</p>
         <Link to="/dash/transactions/new">Add Transaction</Link>
       </>
     );
+
     const tableContent = ids?.length
-      ? ids.map((transactionId) => (
-          <div>
-            <p>{entities[transactionId].username}</p>
-            <Transaction key={transactionId} transactionId={transactionId} />
-          </div>
+      ? ids.map((previousCloseId) => (
+          <PreviousClose
+            key={previousCloseId}
+            previousCloseId={previousCloseId}
+          />
         ))
       : noTransactions;
 
@@ -50,4 +51,4 @@ const AllTransactionsList = () => {
 
   return content;
 };
-export default AllTransactionsList;
+export default AllPreviousClosesList;

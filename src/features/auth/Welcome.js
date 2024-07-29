@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import useTitle from "../../hooks/useTitle";
-import DailyClose from "../polygon/DailyClose";
 
 const Welcome = () => {
   const date = new Date();
@@ -21,6 +20,9 @@ const Welcome = () => {
       <h1>{`Welcome ${username}!`}</h1>
       <h3>How can Smart Investor help you today?</h3>
 
+      <p>
+        <Link to="/dash/portfolio">My Portfolio</Link>
+      </p>
       <p>
         <Link to="/dash/transactions">My Transactions</Link>
       </p>
@@ -47,9 +49,13 @@ const Welcome = () => {
         </p>
       )}
 
+      <p>
+        <Link to="/dash/previousCloses">My Previous Closes</Link>
+      </p>
+
       {isAdmin && (
         <p>
-          <Link to="/dash/previousCloses">Previous Closes List</Link>
+          <Link to="/dash/previousCloses/All">All Previous Closes</Link>
         </p>
       )}
     </section>

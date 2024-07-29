@@ -9,7 +9,7 @@ import { useGetTransactionsQuery } from "../transactions/transactionsApiSlice";
 const PreviousClosesList = () => {
   useTitle("SmartInvestor: PreviousCloses List");
 
-  const { username, isAdmin } = useAuth();
+  const { username } = useAuth();
 
   const {
     data: previousCloses,
@@ -54,27 +54,17 @@ const PreviousClosesList = () => {
     const { ids: transactionsIds, entities: transactionsEntities } =
       transactions;
 
-    let filteredIds;
-    if (isAdmin) {
-      filteredIds = [...transactionsIds];
-    } else {
-      filteredIds = transactionsIds.filter(
-        (transactionId) =>
-          transactionsEntities[transactionId].username === username
-      );
-    }
-    const tickersArr = filteredIds.map(
-      (transactionId) => transactionsEntities[transactionId]
+    const filteredIds = transactionsIds.filter(
+      (transactionId) =>
+        transactionsEntities[transactionId].username === username
     );
 
-    let filteredPreviousClosesIds;
-    if (isAdmin) {
-      filteredPreviousClosesIds = [...ids];
-    } else {
-      filteredPreviousClosesIds = ids.filter((previousCloseId) =>
-        tickersArr.includes(entities[previousCloseId].ticker)
-      );
-    }
+    const tickersArr = filteredIds.map(
+      (transactionId) => transactionsEntities[transactionId].stock.ticker
+    );
+    const filteredPreviousClosesIds = ids.filter((previousCloseId) =>
+      tickersArr.includes(entities[previousCloseId].ticker)
+    );
     const noTransactions = (
       <>
         <p>No Transactions have been made yet.</p>
