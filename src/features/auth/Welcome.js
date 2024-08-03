@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import useTitle from "../../hooks/useTitle";
-import { useLocation } from "react-router-dom";
-import { format } from "date-fns";
 
 const Welcome = () => {
   const date = new Date();
@@ -16,21 +14,23 @@ const Welcome = () => {
     hour12: false,
   }).format(date);
 
-  const { username, status, isAdmin } = useAuth();
+  const { username, status, isAdmin, lastLogin } = useAuth();
 
   useTitle(`SmartInvestor: ${username}`);
 
-  const location = useLocation();
-  const { lastLogin } = location.state || {};
-  const loginTimeFormat = new Intl.DateTimeFormat("en-GB", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  }).format(new Date(lastLogin));
+  console.log(lastLogin);
+  const loginTimeFormat =
+    lastLogin !== "first login"
+      ? new Intl.DateTimeFormat("en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        }).format(new Date(lastLogin))
+      : "Congrats! This is you'r first login";
   const content = (
     <section className="welcome">
       <p>{today}</p>

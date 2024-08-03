@@ -33,15 +33,14 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { accessToken, lastLogin } = await login({
+      const { accessToken } = await login({
         username,
         password,
       }).unwrap();
-
       dispatch(setCredentials({ accessToken }));
       setUsername("");
       setPassword("");
-      navigate("/dash", { state: { lastLogin } });
+      navigate("/dash");
     } catch (err) {
       if (!err.status) {
         console.log(err);
