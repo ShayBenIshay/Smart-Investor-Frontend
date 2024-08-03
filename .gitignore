@@ -1,5 +1,6 @@
 .env
 tickers
+toDo.txt
 
 # dependencies
 /node_modules
