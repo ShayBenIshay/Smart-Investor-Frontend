@@ -20,8 +20,9 @@ const Welcome = () => {
 
   console.log(lastLogin);
   const loginTimeFormat =
-    lastLogin !== "first login"
-      ? new Intl.DateTimeFormat("en-GB", {
+    !lastLogin || lastLogin === "first login"
+      ? "Congrats! This is you'r first login"
+      : new Intl.DateTimeFormat("en-GB", {
           day: "2-digit",
           month: "2-digit",
           year: "numeric",
@@ -29,8 +30,7 @@ const Welcome = () => {
           minute: "2-digit",
           second: "2-digit",
           hour12: false,
-        }).format(new Date(lastLogin))
-      : "Congrats! This is you'r first login";
+        }).format(new Date(lastLogin));
   const content = (
     <section className="welcome">
       <p>{today}</p>
