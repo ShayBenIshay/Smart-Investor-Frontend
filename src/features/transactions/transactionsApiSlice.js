@@ -44,7 +44,10 @@ export const transactionsApiSlice = smartInvestorApiSlice.injectEndpoints({
           ...initialTransaction,
         },
       }),
-      invalidatesTags: [{ type: "Transaction", id: "LIST" }],
+      invalidatesTags: [
+        { type: "Transaction", id: "LIST" },
+        { type: "PreviousClose" },
+      ],
     }),
     updateTransaction: builder.mutation({
       query: (initialTransaction) => ({
@@ -56,6 +59,7 @@ export const transactionsApiSlice = smartInvestorApiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, arg) => [
         { type: "Transaction", id: arg.id },
+        { type: "PreviousClose" },
       ],
     }),
     deleteTransaction: builder.mutation({
@@ -66,6 +70,7 @@ export const transactionsApiSlice = smartInvestorApiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, arg) => [
         { type: "Transaction", id: arg.id },
+        { type: "PreviousClose" },
       ],
     }),
   }),
@@ -83,7 +88,9 @@ export const selectTransactionsResult =
 
 const selectTransactionsData = createSelector(
   selectTransactionsResult,
-  (transactionsResult) => transactionsResult.data
+  (transactionsResult) => {
+    return transactionsResult.data;
+  }
 );
 
 export const {

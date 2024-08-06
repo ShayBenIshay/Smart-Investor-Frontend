@@ -6,15 +6,16 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const baseQueryWithRetry = async (args, api, extraOptions, retries = 5) => {
   let result = await baseQuery(args, api, extraOptions);
+  console.log(result);
 
   for (let i = 0; i < retries; i++) {
-    //change to the status of too many request and then move the sleep and recall inside
     if (result?.error?.status !== 403) {
       break;
     }
     await sleep(60000); // Wait 60 seconds
     result = await baseQuery(args, api, extraOptions);
   }
+  console.log(result);
 
   return result;
 };
@@ -46,9 +47,7 @@ export const { useGetDailyCloseQuery, useGetPreviousCloseQuery } =
   polygonApiSlice;
 
 export function transformDate(dateString) {
-  // Split the input date string into parts
   const parts = dateString.split("/");
-  // Rearrange and format the parts into the desired output format
   const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
   return formattedDate;
 }

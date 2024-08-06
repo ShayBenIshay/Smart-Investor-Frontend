@@ -58,6 +58,7 @@ function App() {
             <Route element={<Prefetch />}>
               <Route path="dash" element={<DashLayout />}>
                 <Route index element={<Welcome />} />
+                {/* <Route path="portfolio" element={<Port data={mockData} />} /> */}
                 <Route
                   path="portfolio"
                   element={<Portfolio data={mockData} />}
@@ -81,8 +82,6 @@ function App() {
                 <Route path="previousCloses">
                   <Route index element={<PreviousClosesList />} />
                   <Route path="all" element={<AllPreviousClosesList />} />
-                  {/* <Route index element={<PreviousClose />} /> */}
-                  {/* <Route path=":ticker" element={<PreviousClose />} /> */}
                 </Route>
 
                 {/* Catch all - replace with 404 component if you want */}

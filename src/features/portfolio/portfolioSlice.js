@@ -5,15 +5,12 @@ import {
 } from "@reduxjs/toolkit";
 import { transactionsApiSlice } from "../transactions/transactionsApiSlice";
 
-// Create an entity adapter for the portfolio
 const portfolioAdapter = createEntityAdapter({
   selectId: (portfolioItem) => portfolioItem.ticker,
 });
 
-// Initial state for the portfolio
 const initialState = portfolioAdapter.getInitialState();
 
-// Create an async thunk to calculate the portfolio
 export const calculatePortfolio = createAsyncThunk(
   "portfolio/calculatePortfolio",
   async (_, { dispatch }) => {
@@ -22,12 +19,10 @@ export const calculatePortfolio = createAsyncThunk(
         transactionsApiSlice.endpoints.getTransactions.initiate();
       const { ids, entities } = await dispatch(baseQuery).unwrap();
       const transactions = ids.map((transactionId) => entities[transactionId]);
-      // console.log(transactions);
       const portfolio = transactions.reduce((acc, transaction) => {
         const { stock, papers, username } = transaction;
         const { ticker, price } = stock;
         const id = username + "-" + ticker;
-        // console.log(id);
         if (!acc[id]) {
           acc[id] = {
             username,
@@ -58,7 +53,6 @@ const portfolioSlice = createSlice({
       console.error("Failed to calculate portfolio:", action.error);
     });
     builder.addCase(calculatePortfolio.fulfilled, (state, action) => {
-      console.log("Action payload:", action.payload);
       portfolioAdapter.setAll(state, action.payload);
     });
   },
@@ -66,7 +60,6 @@ const portfolioSlice = createSlice({
 
 export default portfolioSlice.reducer;
 
-// Selectors to get the normalized portfolio data
 export const {
   selectAll: selectAllPortfolioItems,
   selectById: selectPortfolioById,

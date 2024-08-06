@@ -11,7 +11,7 @@ import {
 } from "../../app/api/polygonApiSlice";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import { tickersList } from "../../tickers/tickers";
 const AddTransactionForm = () => {
   const [addTransaction, { isLoading, isSuccess, isError, error }] =
     useAddTransactionMutation();
@@ -37,26 +37,31 @@ const AddTransactionForm = () => {
 
   const transformedDate = transformDate(format(date, "dd/MM/yyyy"));
 
-  const { data: dailyCloseData, error: dailyCloseError } =
+  const { data: dailyCloseData, isSuccess: isDailySuccess } =
     useGetDailyCloseQuery(
       { ticker, date: transformedDate },
-      { skip: ticker.length < 4 || isToday(date) }
+      { skip: !tickersList.includes(ticker) || isToday(date) }
     );
-  const { data: previousCloseData, error: previousCloseError } =
+  const { data: previousCloseData, isSuccess: isPrevSuccess } =
     useGetPreviousCloseQuery(
       { ticker },
-      { skip: ticker.length < 4 || !isToday(date) }
+      { skip: !tickersList.includes(ticker) || !isToday(date) }
     );
 
   useEffect(() => {
-    if (dailyCloseData) {
-      setPrice(dailyCloseData.close);
-    } else if (previousCloseData) {
-      setPrice(previousCloseData.results[0].c);
+    if (
+      (isPrevSuccess && previousCloseData.resultsCount !== 0) ||
+      isDailySuccess
+    ) {
+      dailyCloseData
+        ? setPrice(dailyCloseData.close)
+        : setPrice(previousCloseData?.results[0]?.c);
     }
   }, [dailyCloseData, previousCloseData]);
 
-  const onTickerChanged = (e) => setTicker(e.target.value);
+  const onTickerChanged = (e) => {
+    setTicker(e.target.value.trim());
+  };
   const onPriceChanged = (e) => setPrice(e.target.value);
   const onDateChanged = (date) => setDate(date);
   const onPapersChanged = (e) => setPapers(e.target.value);

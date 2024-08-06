@@ -38,9 +38,9 @@ const AllTransactionsList = () => {
     );
     const tableContent = ids?.length
       ? ids.map((transactionId) => (
-          <div>
+          <div key={transactionId}>
             <p>{entities[transactionId].username}</p>
-            <Transaction key={transactionId} transactionId={transactionId} />
+            <Transaction transactionId={transactionId} />
           </div>
         ))
       : noTransactions;
