@@ -6,6 +6,7 @@ import "./Portfolio.css";
 import { Link } from "react-router-dom";
 import PulseLoader from "react-spinners/PulseLoader";
 import useTitle from "../../hooks/useTitle";
+import PortfolioPieChart from "./PortfolioPieChart";
 
 const Portfolio = () => {
   useTitle("SmartInvestor: Portfolio");
@@ -76,6 +77,7 @@ const Portfolio = () => {
       </>
     );
 
+    let totalHoldings = 0;
     const portfolioTable = Object.fromEntries(
       Object.entries(filteredPortfolio).map(([key, portfolioRow]) => {
         const tickerData = Object.values(prevEntities).find(
@@ -86,7 +88,7 @@ const Portfolio = () => {
           100 * (currentPrice / portfolioRow.avgBuyPrice - 1);
         const totalAssetProfit =
           (currentPrice - portfolioRow.avgBuyPrice) * portfolioRow.papers;
-
+        totalHoldings += portfolioRow.totalSpent;
         return [
           key,
           {
@@ -102,7 +104,6 @@ const Portfolio = () => {
     content = Object.keys(portfolioTable).length ? (
       <div className="portfolio">
         <h3>Your Porfolio</h3>
-        <p>in development</p>
         <table>
           <thead>
             <tr>
@@ -140,6 +141,11 @@ const Portfolio = () => {
             })}
           </tbody>
         </table>
+
+        <PortfolioPieChart
+          portfolio={portfolioTable}
+          totalHoldings={totalHoldings}
+        />
       </div>
     ) : (
       noTransactions
