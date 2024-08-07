@@ -100,7 +100,27 @@ const Portfolio = () => {
         ];
       })
     );
-
+    const totals = {
+      ticker: "TOTAL",
+      papers: 0,
+      totalSpent: 0,
+      totalSellPrice: 0,
+    };
+    Object.entries(portfolioTable).map(([key, portfolioItem]) => {
+      totals.papers += portfolioItem.papers;
+      totals.totalSpent += portfolioItem.totalSpent;
+      totals.totalSellPrice +=
+        portfolioItem.currentPrice * portfolioItem.papers;
+    });
+    totals.avgBuyPrice = totals.totalSpent / totals.papers;
+    totals.currentPrice = totals.totalSellPrice / totals.papers;
+    totals.profitPercentage =
+      ((totals.totalSellPrice - totals.totalSpent) / totals.totalSpent) * 100;
+    totals.totalAssetProfit = totals.totalSellPrice - totals.totalSpent;
+    const tableWithTotals = {
+      ...portfolioTable,
+      Totals: totals,
+    };
     content = Object.keys(portfolioTable).length ? (
       <div className="portfolio">
         <h3>Your Porfolio</h3>
@@ -116,7 +136,7 @@ const Portfolio = () => {
             </tr>
           </thead>
           <tbody>
-            {Object.entries(portfolioTable).map(([key, portfolioItem]) => {
+            {Object.entries(tableWithTotals).map(([key, portfolioItem]) => {
               let profitLossClass =
                 portfolioItem.profitPercentage > 0
                   ? "profit"
