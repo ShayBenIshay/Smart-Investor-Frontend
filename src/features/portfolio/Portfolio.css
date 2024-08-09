@@ -1,6 +1,12 @@
-.portfolio {
+.portfolio-table {
   width: 100%;
   margin: 20px auto;
+}
+
+.portfolio-charts-container {
+  display: flex;
+  flex-direction: row;
+  /* justify-content: space-between; */
 }
 
 /* TABLE  */

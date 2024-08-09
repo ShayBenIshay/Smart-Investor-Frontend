@@ -51,38 +51,35 @@ const PortfolioPieChart = ({ portfolio, totalHoldings }) => {
   };
 
   return (
-    <div className="portfolio-container">
-      <h2 className="portfolio-title">Portfolio Charts</h2>
-      <div className="pie-chart-container">
-        <PieChart
-          data={chartData}
-          animate
-          animationDuration={500}
-          animationEasing="ease-out"
-          center={[50, 50]}
-          radius={35}
-          label={({ dataEntry }) =>
-            `${dataEntry.title}: ${dataEntry.value.toFixed(2)}%`
-          }
-          labelPosition={70}
-          labelStyle={{
-            fontSize: "5px",
-            fill: "#fff",
-            textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
-          }}
-          segmentsShift={(index) => (index === clickedIndex ? 5 : 0)}
-          segmentsStyle={(index) => {
-            return {
-              fill: index === hoveredIndex ? "gray" : chartData[index].color,
-              cursor: "pointer",
-              transition: "fill 0.3s, transform 0.3s",
-            };
-          }}
-          onMouseOver={handleMouseOver}
-          onMouseOut={handleMouseOut}
-          onClick={handleClick}
-        />
-      </div>
+    <div className="pie-chart-container">
+      <PieChart
+        data={chartData}
+        animate
+        animationDuration={500}
+        animationEasing="ease-out"
+        center={[50, 50]}
+        radius={35}
+        label={({ dataEntry }) =>
+          `${dataEntry.title}: ${dataEntry.value.toFixed(2)}%`
+        }
+        labelPosition={70}
+        labelStyle={{
+          fontSize: "5px",
+          fill: "#fff",
+          textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
+        }}
+        segmentsShift={(index) => (index === clickedIndex ? 5 : 0)}
+        segmentsStyle={(index) => {
+          return {
+            fill: index === hoveredIndex ? "gray" : chartData[index].color,
+            cursor: "pointer",
+            transition: "fill 0.3s, transform 0.3s",
+          };
+        }}
+        onMouseOver={handleMouseOver}
+        onMouseOut={handleMouseOut}
+        onClick={handleClick}
+      />
     </div>
   );
 };

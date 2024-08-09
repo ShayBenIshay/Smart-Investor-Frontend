@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import PulseLoader from "react-spinners/PulseLoader";
 import useTitle from "../../hooks/useTitle";
 import PortfolioPieChart from "./PortfolioPieChart";
+import PortfolioTable from "./PortfolioTable";
+import PortfolioBarChart from "./PortfolioBarChart";
 
 const Portfolio = () => {
   useTitle("SmartInvestor: Portfolio");
@@ -122,50 +124,21 @@ const Portfolio = () => {
       Totals: totals,
     };
     content = Object.keys(portfolioTable).length ? (
-      <div className="portfolio">
-        <h3>Your Porfolio</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Ticker</th>
-              <th>Papers</th>
-              <th>Avg Buy Price</th>
-              <th>Current Price</th>
-              <th>Profit Percentage</th>
-              <th>Total Asset Profit</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.entries(tableWithTotals).map(([key, portfolioItem]) => {
-              let profitLossClass =
-                portfolioItem.profitPercentage > 0
-                  ? "profit"
-                  : portfolioItem.profitPercentage < 0
-                  ? "loss"
-                  : "";
-
-              return (
-                <tr key={key}>
-                  <td>{portfolioItem.ticker}</td>
-                  <td>{portfolioItem.papers}</td>
-                  <td>{portfolioItem.avgBuyPrice.toFixed(2)}</td>
-                  <td>{portfolioItem.currentPrice?.toFixed(2) || "N/A"}</td>
-                  <td className={profitLossClass}>
-                    {portfolioItem.profitPercentage?.toFixed(2) || "N/A"}%
-                  </td>
-                  <td className={profitLossClass}>
-                    {portfolioItem.totalAssetProfit?.toFixed(2) || "N/A"}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-
-        <PortfolioPieChart
-          portfolio={portfolioTable}
-          totalHoldings={totalHoldings}
-        />
+      <div className="portfolio-container">
+        <div className="portfolio-table">
+          <h3>Your Porfolio</h3>
+          <PortfolioTable portfolio={tableWithTotals} />
+        </div>
+        <div>
+          <h2 className="portfolio-title">Portfolio Charts</h2>
+          <div className="portfolio-charts-container">
+            <PortfolioBarChart portfolio={portfolioTable} />
+            <PortfolioPieChart
+              portfolio={portfolioTable}
+              totalHoldings={totalHoldings}
+            />
+          </div>
+        </div>
       </div>
     ) : (
       noTransactions
