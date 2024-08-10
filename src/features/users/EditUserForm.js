@@ -24,6 +24,7 @@ const EditUserForm = ({ user }) => {
   const [password, setPassword] = useState("");
   const [validPassword, setValidPassword] = useState(false);
   const [roles, setRoles] = useState(user.roles);
+  const [wallet, setWallet] = useState(user.wallet);
 
   useEffect(() => {
     setValidUsername(USER_REGEX.test(username));
@@ -38,12 +39,14 @@ const EditUserForm = ({ user }) => {
       setUsername("");
       setPassword("");
       setRoles([]);
+      setWallet(0);
       navigate("/dash/users");
     }
   }, [isSuccess, isDelSuccess, navigate]);
 
   const onUsernameChanged = (e) => setUsername(e.target.value);
   const onPasswordChanged = (e) => setPassword(e.target.value);
+  const onWalletChanged = (e) => setWallet(e.target.value);
 
   const onRolesChanged = (e) => {
     const values = Array.from(
@@ -55,9 +58,9 @@ const EditUserForm = ({ user }) => {
 
   const onSaveUserClicked = async (e) => {
     if (password) {
-      await updateUser({ id: user.id, username, password, roles });
+      await updateUser({ id: user.id, username, password, roles, wallet });
     } else {
-      await updateUser({ id: user.id, username, roles });
+      await updateUser({ id: user.id, username, roles, wallet });
     }
   };
 
@@ -89,6 +92,7 @@ const EditUserForm = ({ user }) => {
   const validRolesClass = !Boolean(roles.length)
     ? "form__input--incomplete"
     : "";
+  const validWalletClass = !wallet ? "form__input--incomplete" : "";
 
   const errContent = (error?.data?.message || delerror?.data?.message) ?? "";
 
@@ -112,7 +116,6 @@ const EditUserForm = ({ user }) => {
           value={username}
           onChange={onUsernameChanged}
         />
-
         <label className="form__label" htmlFor="password">
           Password: <span className="nowrap">[empty = no change]</span>{" "}
           <span className="nowrap">[4-12 chars incl. !@#$%]</span>
@@ -125,7 +128,6 @@ const EditUserForm = ({ user }) => {
           value={password}
           onChange={onPasswordChanged}
         />
-
         <label className="form__label" htmlFor="roles">
           Assigned Roles:
         </label>
@@ -140,6 +142,17 @@ const EditUserForm = ({ user }) => {
         >
           {options}
         </select>
+        <label className="form__label" htmlFor="wallet">
+          Wallet:
+        </label>
+        <input
+          className={`form__input ${validWalletClass}`}
+          id="wallet"
+          name="wallet"
+          type="wallet"
+          value={wallet}
+          onChange={onWalletChanged}
+        />
         <div className="form__action-buttons">
           <button
             className="icon-button"

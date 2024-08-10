@@ -2,11 +2,9 @@ import * as React from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
 
 export default function PortfolioBarChart({ portfolio }) {
-  console.log(Object.entries(portfolio));
   const tickers = Object.entries(portfolio).map(([ticker, portfolioItem]) => {
     return ticker;
   });
-  console.log(tickers);
   const percentages = Object.entries(portfolio).map(([_, portfolioItem]) => {
     return portfolioItem.profitPercentage.toFixed(2);
   });

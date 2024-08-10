@@ -6,7 +6,6 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const baseQueryWithRetry = async (args, api, extraOptions, retries = 5) => {
   let result = await baseQuery(args, api, extraOptions);
-  console.log(result);
 
   for (let i = 0; i < retries; i++) {
     if (result?.error?.status !== 403) {
@@ -14,8 +13,8 @@ const baseQueryWithRetry = async (args, api, extraOptions, retries = 5) => {
     }
     await sleep(60000); // Wait 60 seconds
     result = await baseQuery(args, api, extraOptions);
+    console.log(result);
   }
-  console.log(result);
 
   return result;
 };

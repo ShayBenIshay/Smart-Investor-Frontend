@@ -25,17 +25,28 @@ const colors = [
   "#27AE60",
 ];
 
-const PortfolioPieChart = ({ portfolio, totalHoldings }) => {
+const PortfolioPieChart = ({ portfolio, totalHoldings, liquid }) => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [clickedIndex, setClickedIndex] = useState(null);
 
   const chartData = useMemo(() => {
     let colorIndex = 0;
-    return Object.entries(portfolio).map(([key, portfolioItem]) => ({
-      title: portfolioItem.ticker,
-      value: (portfolioItem.totalSpent / totalHoldings) * 100,
-      color: colors[colorIndex++ % colors.length],
-    }));
+    const portfolioChart = Object.entries(portfolio).map(
+      ([key, portfolioItem]) => ({
+        title: portfolioItem.ticker,
+        value: (portfolioItem.totalSpent / totalHoldings) * 100,
+        color: colors[colorIndex++ % colors.length],
+      })
+    );
+
+    if (liquid > 0)
+      portfolioChart[Object.entries(portfolio).length] = {
+        title: "LIQUID",
+        value: (liquid / totalHoldings) * 100,
+        color: colors[colorIndex++ % colors.length],
+      };
+
+    return portfolioChart;
   }, [portfolio, totalHoldings]);
 
   const handleMouseOver = (event, index) => {
@@ -49,7 +60,6 @@ const PortfolioPieChart = ({ portfolio, totalHoldings }) => {
   const handleClick = (event, index) => {
     setClickedIndex(index === clickedIndex ? null : index);
   };
-
   return (
     <div className="pie-chart-container">
       <PieChart

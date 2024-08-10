@@ -22,6 +22,7 @@ const AddUserForm = () => {
   const [password, setPassword] = useState("");
   const [validPassword, setValidPassword] = useState(false);
   const [roles, setRoles] = useState(["Customer"]);
+  const [wallet, setWallet] = useState(10000);
 
   useEffect(() => {
     setValidUsername(USER_REGEX.test(username));
@@ -36,28 +37,31 @@ const AddUserForm = () => {
       setUsername("");
       setPassword("");
       setRoles([]);
+      setWallet(10000);
       navigate("/dash/users");
     }
   }, [isSuccess, navigate]);
 
   const onUsernameChanged = (e) => setUsername(e.target.value);
   const onPasswordChanged = (e) => setPassword(e.target.value);
+  const onWalletChanged = (e) => setWallet(e.target.value);
 
   const onRolesChanged = (e) => {
     const values = Array.from(
-      e.target.selectedOptions, //HTMLCollection
+      e.target.selectedOptions,
       (option) => option.value
     );
     setRoles(values);
   };
 
   const canSave =
-    [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
+    [roles.length, validUsername, validPassword, wallet >= 0].every(Boolean) &&
+    !isLoading;
 
   const onSaveUserClicked = async (e) => {
     e.preventDefault();
     if (canSave) {
-      await addUser({ username, password, roles });
+      await addUser({ username, password, roles, wallet });
     }
   };
 
@@ -73,7 +77,8 @@ const AddUserForm = () => {
   const errClass = isError ? "errmsg" : "offscreen";
   const validUserClass = !validUsername ? "form__input--incomplete" : "";
   const validPwdClass = !validPassword ? "form__input--incomplete" : "";
-  const validRolesClass = !Boolean(roles.length)
+  const validRolesClass = !Boolean(roles.length);
+  const validWalletClass = !Boolean(roles.length)
     ? "form__input--incomplete"
     : "";
 
@@ -124,6 +129,17 @@ const AddUserForm = () => {
         >
           {options}
         </select>
+        <label className="form__label" htmlFor="wallet">
+          Wallet:
+        </label>
+        <input
+          className={`form__input ${validWalletClass}`}
+          type="number"
+          id="userWallet"
+          name="userWallet"
+          value={wallet}
+          onChange={onWalletChanged}
+        />
         <div className="form__action-buttons">
           <button className="icon-button" title="Save" disabled={!canSave}>
             <FontAwesomeIcon icon={faSave} />

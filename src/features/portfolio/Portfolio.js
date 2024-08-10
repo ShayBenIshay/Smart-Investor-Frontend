@@ -9,6 +9,8 @@ import useTitle from "../../hooks/useTitle";
 import PortfolioPieChart from "./PortfolioPieChart";
 import PortfolioTable from "./PortfolioTable";
 import PortfolioBarChart from "./PortfolioBarChart";
+import Wallet from "../wallet/Wallet";
+import { useGetUsersQuery } from "../users/usersApiSlice";
 
 const Portfolio = () => {
   useTitle("SmartInvestor: Portfolio");
@@ -32,7 +34,17 @@ const Portfolio = () => {
     isError: isPrevError,
     error: prevError,
   } = useGetPreviousClosesQuery("previousClosesList");
-
+  const {
+    data: users,
+    isLoading: isUsersLoading,
+    isSuccess: isUsersSuccess,
+    isError: isUsersError,
+    error: usersError,
+  } = useGetUsersQuery("usersList", {
+    pollingInterval: 60000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+  });
   let content;
 
   if (isLoading || isPrevLoading) content = <PulseLoader color={"#000"} />;
@@ -79,7 +91,16 @@ const Portfolio = () => {
       </>
     );
 
-    let totalHoldings = 0;
+    let liquid = 0;
+    if (isUsersSuccess) {
+      const { entities } = users;
+      for (const key in entities) {
+        if (entities[key].username === username) {
+          liquid = entities[key].wallet > 0 ? entities[key].wallet : 0;
+        }
+      }
+    }
+    let totalHoldings = liquid;
     const portfolioTable = Object.fromEntries(
       Object.entries(filteredPortfolio).map(([key, portfolioRow]) => {
         const tickerData = Object.values(prevEntities).find(
@@ -119,10 +140,14 @@ const Portfolio = () => {
     totals.profitPercentage =
       ((totals.totalSellPrice - totals.totalSpent) / totals.totalSpent) * 100;
     totals.totalAssetProfit = totals.totalSellPrice - totals.totalSpent;
-    const tableWithTotals = {
-      ...portfolioTable,
-      Totals: totals,
-    };
+    const tableWithTotals =
+      Object.keys(portfolioTable).length > 1
+        ? {
+            ...portfolioTable,
+            Totals: totals,
+          }
+        : portfolioTable;
+
     content = Object.keys(portfolioTable).length ? (
       <div className="portfolio-container">
         <div className="portfolio-table">
@@ -136,6 +161,7 @@ const Portfolio = () => {
             <PortfolioPieChart
               portfolio={portfolioTable}
               totalHoldings={totalHoldings}
+              liquid={liquid}
             />
           </div>
         </div>
@@ -145,7 +171,12 @@ const Portfolio = () => {
     );
   }
 
-  return content;
+  return (
+    <>
+      <Wallet />
+      {content}
+    </>
+  );
 };
 
 export default Portfolio;
