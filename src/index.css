@@ -282,9 +282,27 @@ article {
   border-radius: 10px;
   padding: 1em;
 }
+.wallet-container {
+}
 
-.deleteButton {
+.wallet-container p {
+  margin-bottom: 10px;
+}
+
+.button {
+  cursor: pointer;
+  margin: 10px;
+  padding: 5px;
+}
+
+.deleteButton,
+.withdrawal-button {
   background-color: palevioletred;
+  color: white;
+}
+
+.deposit-button {
+  background-color: limegreen;
   color: white;
 }
 

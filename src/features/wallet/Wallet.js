@@ -81,9 +81,13 @@ const Wallet = () => {
             ? "loss"
             : "";
         content = (
-          <>
-            <p>Liquid equity: </p>
-            <p className={profitLossClass}>{entities[key].wallet.toFixed(2)}</p>
+          <article className="wallet-container">
+            <p>
+              Liquidity:{" "}
+              <span className={profitLossClass}>
+                {entities[key].wallet.toFixed(2)}
+              </span>
+            </p>
             <div>
               <input
                 type="number"
@@ -92,14 +96,22 @@ const Wallet = () => {
                 value={liquid}
                 onChange={onLiquidChanged}
               />
-              <button onClick={() => handleDeposit(entities[key])}>
-                Deposit
-              </button>
-              <button onClick={() => handleWithdrawal(entities[key])}>
-                Withdrawal
-              </button>
+              <div>
+                <button
+                  className="button deposit-button"
+                  onClick={() => handleDeposit(entities[key])}
+                >
+                  Deposit
+                </button>
+                <button
+                  className="button withdrawal-button"
+                  onClick={() => handleWithdrawal(entities[key])}
+                >
+                  Withdrawal
+                </button>
+              </div>
             </div>
-          </>
+          </article>
         );
       }
     }
