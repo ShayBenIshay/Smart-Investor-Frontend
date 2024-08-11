@@ -11,6 +11,7 @@ const PortfolioTable = ({ portfolio }) => {
           <th>Current Price</th>
           <th>Profit Percentage</th>
           <th>Total Asset Profit</th>
+          <th>Daily Asset Percentage</th>
         </tr>
       </thead>
       <tbody>
@@ -33,6 +34,9 @@ const PortfolioTable = ({ portfolio }) => {
               </td>
               <td className={profitLossClass}>
                 {portfolioItem.totalAssetProfit?.toFixed(2) || "N/A"}
+              </td>
+              <td className={profitLossClass}>
+                {`${portfolioItem.dailyProfitPercentage?.toFixed(2)}%` || "N/A"}
               </td>
             </tr>
           );

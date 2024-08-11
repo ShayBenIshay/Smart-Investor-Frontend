@@ -59,10 +59,12 @@ const EditTransactionForm = ({ transaction }) => {
     );
 
   useEffect(() => {
-    if (dailyCloseData) {
-      setPrice(dailyCloseData.close);
-    } else if (previousCloseData) {
-      setPrice(previousCloseData.results[0].c);
+    if (transaction.stock.price !== price) {
+      if (dailyCloseData) {
+        setPrice(dailyCloseData.close);
+      } else if (previousCloseData) {
+        setPrice(previousCloseData.results[0].c);
+      }
     }
   }, [dailyCloseData, previousCloseData]);
 

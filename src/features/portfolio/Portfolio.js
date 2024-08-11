@@ -63,7 +63,7 @@ const Portfolio = () => {
     const filteredPortfolio = transactionsArr
       .filter((transaction) => transaction.username === username)
       .reduce((acc, transaction) => {
-        const { stock, papers } = transaction;
+        const { stock, papers, operation } = transaction;
         const { ticker, price } = stock;
         const id = ticker;
         if (!acc[id]) {
@@ -75,8 +75,12 @@ const Portfolio = () => {
             avgBuyPrice: 0,
           };
         }
-        acc[id].papers += papers;
-        acc[id].totalSpent += papers * price;
+        acc[id].papers += operation === "Buy" ? papers : -papers;
+        acc[id].totalSpent +=
+          operation === "Buy"
+            ? papers * price
+            : -acc[id].papers * acc[id].avgBuyPrice;
+
         acc[id].avgBuyPrice = acc[id].totalSpent / acc[id].papers;
         return acc;
       }, {});
@@ -111,6 +115,10 @@ const Portfolio = () => {
           100 * (currentPrice / portfolioRow.avgBuyPrice - 1);
         const totalAssetProfit =
           (currentPrice - portfolioRow.avgBuyPrice) * portfolioRow.papers;
+        const dailyProfit =
+          tickerData.previousClose.close - tickerData.previousClose.open;
+        const dailyProfitPercentage =
+          (dailyProfit / tickerData.previousClose.open) * 100;
         totalHoldings += portfolioRow.totalSpent;
         return [
           key,
@@ -119,6 +127,7 @@ const Portfolio = () => {
             currentPrice,
             profitPercentage,
             totalAssetProfit,
+            dailyProfitPercentage,
           },
         ];
       })
@@ -130,29 +139,37 @@ const Portfolio = () => {
       totalSellPrice: 0,
     };
     Object.entries(portfolioTable).map(([key, portfolioItem]) => {
-      totals.papers += portfolioItem.papers;
+      // totals.papers += portfolioItem.papers;
       totals.totalSpent += portfolioItem.totalSpent;
       totals.totalSellPrice +=
         portfolioItem.currentPrice * portfolioItem.papers;
     });
-    totals.avgBuyPrice = totals.totalSpent / totals.papers;
-    totals.currentPrice = totals.totalSellPrice / totals.papers;
+    // totals.avgBuyPrice = totals.totalSpent / totals.papers;
+    // totals.currentPrice = totals.totalSellPrice / totals.papers;
     totals.profitPercentage =
       ((totals.totalSellPrice - totals.totalSpent) / totals.totalSpent) * 100;
     totals.totalAssetProfit = totals.totalSellPrice - totals.totalSpent;
-    const tableWithTotals =
-      Object.keys(portfolioTable).length > 1
-        ? {
-            ...portfolioTable,
-            Totals: totals,
-          }
-        : portfolioTable;
+    // const tableWithTotals =
+    //   Object.keys(portfolioTable).length > 1
+    //     ? {
+    //         ...portfolioTable,
+    //         Totals: totals,
+    //       }
+    //     : portfolioTable;
 
     content = Object.keys(portfolioTable).length ? (
       <div className="portfolio-container">
+        <div className="portfolio-header">
+          <Wallet />
+          <article>
+            <h4>Total</h4>
+            <p>{`Profit/Loss (%): ${totals.profitPercentage.toFixed(2)}`}</p>
+            <p>{`Profit/Loss ($): ${totals.totalAssetProfit.toFixed(2)}`}</p>
+          </article>
+        </div>
         <div className="portfolio-table">
           <h3>Your Porfolio</h3>
-          <PortfolioTable portfolio={tableWithTotals} />
+          <PortfolioTable portfolio={portfolioTable} />
         </div>
         <div>
           <h2 className="portfolio-title">Portfolio Charts</h2>
@@ -167,16 +184,14 @@ const Portfolio = () => {
         </div>
       </div>
     ) : (
-      noTransactions
+      <>
+        <Wallet />
+        {noTransactions}
+      </>
     );
   }
 
-  return (
-    <>
-      <Wallet />
-      {content}
-    </>
-  );
+  return content;
 };
 
 export default Portfolio;
